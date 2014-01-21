@@ -1,0 +1,26 @@
+{
+  "name": "moment-recur",
+  "main": "moment-recur.js",
+  "version": "1.0.0",
+  "homepage": "https://github.com/c-trimm/moment-recur",
+  "authors": [
+    "Casey Trimm <me@caseytrimm.com>"
+  ],
+  "description": "A momentjs plugin for matching and generating recurring dates.",
+  "keywords": [
+    "momentjs",
+    "date",
+    "recur"
+  ],
+  "license": "UNLICENSE",
+  "dependencies": {
+    "moment": "~2.4.0"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

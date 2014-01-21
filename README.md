@@ -32,6 +32,12 @@ Simply include the momentjs script, then the momment-recur script.
 <script src="moment-recur.js"></script>
 ```
 
+### Bower
+moment-recur is a register bower component.
+```
+bower install moment-recur
+```
+
 ### Browser with RequireJS
 moment-recur also works with RequireJS. Include it just like any other script.
 ```js

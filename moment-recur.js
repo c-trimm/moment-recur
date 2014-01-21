@@ -282,7 +282,7 @@
             else if ( units === Object(units) ) {
                 list = units;
             }
-            else if ( toString.call(units) == '[object String]' ) {
+            else if ( toString.call(units) == '[object Number]' ) {
                 list[units] = true;
             }
             else {

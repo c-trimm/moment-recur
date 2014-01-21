@@ -1,6 +1,6 @@
-momnent-recur
+moment-recur
 =====
-moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/). ***It does not handle recurring times.***
+moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/).
 
 ```js
 var startDate = moment( "01/01/2014" ); // Wednesday, January 1, 2014

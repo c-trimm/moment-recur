@@ -32,18 +32,18 @@ Simply include the momentjs script, then the momment-recur script.
 <script src="moment-recur.js"></script>
 ```
 
-### Bower
-moment-recur is a register bower component.
-```
-bower install moment-recur
-```
-
 ### Browser with RequireJS
 moment-recur also works with RequireJS. Include it just like any other script.
 ```js
 define(["moment", "moment-recur"], function(moment){
     //you probably wont' need a reference to mocur itself, so include it last.
 });
+```
+
+### Bower
+moment-recur is a register bower component.
+```
+bower install moment-recur
 ```
 
 ### node.js
@@ -59,4 +59,24 @@ require('moment-recur');
 
 Creating a Recurrence
 ---------------------
--- coming very soon --
+You can create a recurrence from an instance of moment or from the constructor a few different ways.  
+From an instance:
+```js
+// Create a reccurence using today as the start date.
+moment().recur();
+
+// Create a recurrence while passing the start and end dates to the recur function.
+// Note: passing a start date does not require an end date, but an end date does require a start date.
+moment().recur( start, end );
+
+// You may pass a start date to the moment, or use an exisiting moment, to set the start date.
+// In this case, passing a date to the recur function sets and end date.
+moment(start).recur( end );
+
+// Finally, you can create a recurrence and pass in an entire set of options.
+moment().recur({
+    start: "01/01/2014",
+    end: "01/01/2015",
+    startOfWeek: 1
+});
+```

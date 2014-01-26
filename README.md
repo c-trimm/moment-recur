@@ -248,11 +248,11 @@ recurrence = moment("01/01/2014").recur().every(2).days();
 // Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]
 nextDates = recurrence.next(3); 
 
-// Generate the next three dates, formatted in long form
+// Generate the next three dates, formatted in local format
 // Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]
 nextDates = recurrence.next(3, "L");
 
-// Generate previous three dates, formatted in long form
+// Generate previous three dates, formatted in local format
 // Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]
 nextDates = recurrence.previous(3, "L");
 ```
@@ -270,20 +270,20 @@ nextDates = recurrence.next(3, "L");
 
 Options and Other Methods
 -------------------------
-moment-recur provides a few methods for getting/setting options, as well as two utility methods.
+moment-recur provides a few methods for getting/setting options, as well as two utility methods. It also creates two additional momentjs functions.
 
 ### Options
 Options can be set when creating a recurrence or using the getter/setter methods listed below.
 
-Set options upon creation.
+Set options upon creation. Note that the units for rules are converted to objects, so it is not recommended to set rules this way.
 ```js
 moment().recur({
     start: "01/01/2014",
     end: "12/31/2014",
     startOfWeekDay: 0
     rules: [
-        { units: 1, measure: "days" }, 
-        { units: "Monday", measure: "daysOfWeek" }
+        { units: {  1 : true }, measure: "days" }, 
+        { units: { 20 : true }, measure: "daysOfMonth" }
     ],
     exceptions: ["01/05/2014"]
 });
@@ -319,10 +319,21 @@ Use `repeats()` to check if a recurrence has rules set.
 recurrence.repeats(); // true/false
 ```
 
-Use `save()` to export all options, rules, and exceptions as an object. This can be used to store recurrences in a database.
+Use `save()` to export all options, rules, and exceptions as an object. This can be used to store recurrences in a database.  
 **Note:** This does not export the "From Date" which is considered a temporary option.
 ```js
 recurrence.save();
+```
+
+### momentjs Functions
+The `monthWeek()` method can be used to determine the week of the month a date is in.
+```js
+moment("01/01/2014").monthWeek(); // 1
+```
+
+The `dateOnly()` method can be used to remove any time information from a moment.
+```js
+moment("2014-01-01 09:30:26").dateOnly(); // 01/01/2014 12:00:00 AM
 ```
 
 License

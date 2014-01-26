@@ -454,7 +454,7 @@
         };
         
         // Export the settings, rules, and exceptions of this recurring date
-        Recur.prototype.export = function() {
+        Recur.prototype.save = function() {
             var data = {};
             
             if (this.start && moment(this.start).isValid()) {

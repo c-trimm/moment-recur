@@ -4,11 +4,17 @@
 var jasmine = jasmine, describe = describe, it = it, moment = moment, expect = expect, beforeEach = beforeEach;
 
 
-// TODO:
-// Unset Rule
+// TOTEST:
+// Fixed Date Types
+// Array Units
 // Override Rule
-// Export/Import Rules
-// Export/Import Settings
+// Export Rules
+// Export Settings
+// Import rules/settings on creation
+// From Date temporary setting
+// Repeats function
+// Forget Rules
+// getNext/getPrevious
 
 
 describe("Moment-Recur Tests:", function() {

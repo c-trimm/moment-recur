@@ -225,7 +225,7 @@
         }
         
         // Private method to get next and previous occurances
-        function getOccurances(num, asStrings, type) {
+        function getOccurances(num, format, type) {
             var currentDate, date;
             var dates = [];
             
@@ -243,7 +243,7 @@
             // Get the next N dates
             while(dates.length < num) {
                 if (this.matches(currentDate, true)) {
-                    date = asStrings ? currentDate.format("L") : currentDate.clone();
+                    date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
                 }
                 
@@ -386,13 +386,13 @@
             // Our list of exceptions. Match always fails on these dates.
             this.exceptions = options.exceptions || [];
             
-            // Temporary units integer, array, or object. Does not get exported.
+            // Temporary units integer, array, or object. Does not get imported/exported.
             this.units = null;
             
-            // Tempoarary measure type. Does not get exported.
+            // Tempoarary measure type. Does not get imported/exported.
             this.measure = null;
             
-            // Tempoarary from date for next/previous. Does not get exported.
+            // Tempoarary from date for next/previous. Does not get imported/exported.
             this.from = null;
         
             return this;
@@ -488,12 +488,6 @@
         // Set the units and, optionally, the measure
         Recur.prototype.every = function(units, measure) {
             this.units = unitsToObject(units);
-            
-            // The only string that should be passed is the name of a day
-            if (!measure && toString.call(units) === "[object String]") {
-                measure = "daysOfWeek";
-            }
-            
             this.measure = pluralize(measure);
             return trigger.call(this);
         };
@@ -544,9 +538,9 @@
         };
         
         // Forgets rules (by passing measure) and exceptions (by passing date)
-        Recur.prototype.forget = function(what) {
+        Recur.prototype.forget = function(dateOrRule) {
             var i, len;
-            var whatMoment = moment(what);
+            var whatMoment = moment(dateOrRule);
             
             // If valid date, try to remove it from exceptions
             if (whatMoment.isValid()) {
@@ -562,7 +556,7 @@
             
             // Otherwise, try to remove it from the rules
             for (i = 0, len = this.rules.length; i < len; i++) {
-                if (this.rules[i].measure === what) {
+                if (this.rules[i].measure === pluralize(dateOrRule)) {
                     this.rules.splice(i, 1);
                 }
             }
@@ -587,13 +581,13 @@
         };
         
         // Get next N occurances
-        Recur.prototype.getNext = function(num, asStrings) {
-            getOccurances.call(this, num, asStrings, "next");
+        Recur.prototype.next = function(num, format) {
+            getOccurances.call(this, num, format, "next");
         };
         
         // Get previous N occurances
-        Recur.prototype.getPrevious = function(num, asStrings) {
-            getOccurances.call(this, num, asStrings, "previous");
+        Recur.prototype.previous = function(num, format) {
+            getOccurances.call(this, num, format, "previous");
         };
         
         return Recur;

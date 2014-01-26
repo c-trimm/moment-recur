@@ -1,36 +1,28 @@
 moment-recur
 =====
-moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/).
+moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/). 
+
+The rule and matching concept is borrowed from the excellent [node-date-recur](https://github.com/appsattic/node-date-recur) library created by Andrew Chilton.
 
 ```js
-var startDate = moment( "01/01/2014" ); // Wednesday, January 1, 2014
-
-// Intervals - every 2 days
-var rInterval = startDate.recur().every(2).days();
-rInterval.matches( "01/02/2014" ); // false
+var rInterval = moment( "01/01/2014" ).recur().every(2).days();
 rInterval.matches( "01/03/2014" ); // true
 
-// Day Names - every Friday
-var rDay = startDate.recur().every( "Friday" );
-rDay.matches( "01/03/2014" ); // true
-
-// Fixed Dates - every third day of the month
-var rDate = startDate.recur().every(3).dayOfMonth();
-rDate.matches( "01/03/2014" ); // true
-
-// Arrays - first and third week of the month
-var multiRDates = startDate.recur().every( [1, 3] ).weekOfMonth();
-rDate.matches( "01/03/2014" ); // true
+var rFixed = moment.recur().every(10).dayOfMonth();
+rFixed.matches( "05/10/2014" ); // true
 ```
 
 Getting Started
 ---------------
+moment-recur can be included in your project a few different ways.
+
 ### Browser
 Simply include the momentjs script, then the momment-recur script.
 ```html
 <script src="moment.min.js"></script>
 <script src="moment-recur.js"></script>
 ```
+
 
 ### Browser with RequireJS
 moment-recur also works with RequireJS. Include it just like any other script.
@@ -40,11 +32,13 @@ define(["moment", "moment-recur"], function(moment){
 });
 ```
 
+
 ### Bower
 moment-recur is a register bower component.
 ```
 bower install moment-recur
 ```
+
 
 ### node.js
 moment-recur can be installed with npm and required into a script.
@@ -57,26 +51,264 @@ var moment = require('moment');
 require('moment-recur');
 ```
 
-Creating a Recurrence
----------------------
+
+Creating a Recurring Date
+-------------------------
 You can create a recurrence from an instance of moment or from the constructor a few different ways.  
+
 From an instance:
 ```js
+var recurrence;
+
 // Create a reccurence using today as the start date.
-moment().recur();
+recurrence = moment().recur();
 
 // Create a recurrence while passing the start and end dates to the recur function.
-// Note: passing a start date does not require an end date, but an end date does require a start date.
-moment().recur( start, end );
+// Note: passing an end date requires you to also pass a start date.
+recurrence = moment().recur( start, end );
 
 // You may pass a start date to the moment, or use an exisiting moment, to set the start date.
 // In this case, passing a date to the recur function sets and end date.
-moment(start).recur( end );
+recurrence = moment(start).recur( end );
 
 // Finally, you can create a recurrence and pass in an entire set of options.
-moment().recur({
+recurrence = moment().recur({
     start: "01/01/2014",
     end: "01/01/2015",
     startOfWeek: 1
 });
 ```
+
+From the constructor:
+```js
+var recurrence;
+
+// Create recurrence without a start date. Note: this will not work with intervals.
+recurrence = moment.recur();
+
+// Create a recurrence, passing just the start, or the start and end dates.
+recurrence = moment.recur( start, end );
+
+// Create a recurrence, passing set of options.
+recurrence = moment.recur({
+    start: "01/01/2014",
+    end: "01/01/2015",
+    startOfWeek: 1
+});
+```
+
+Creating Rules
+--------------
+moment-recur uses rules to define when a date should recur. You can then generate future or past reccurences based on these rules, or see if a specific date matches the rules. Rules can also be overridden or removed.
+
+
+### The every() Function
+The `every()` function allows you to set the units and, optionally, the measurment type of the recurring date. It returns recur object to allow chaining.
+
+```js
+var myDate, recurrence;
+
+// Create a date to start from
+myDate = moment("01/01/2014");
+
+// You can pass the units to recur on, and the measurement type.
+recurrence = myDate.recur().every(1, "days");
+
+// You can also chain the measurement type instead of passing it to every.
+recurrence = myDate.recur().every(1).day();
+
+// It is also possible to pass an array of units.
+recurrence = myDate.recur().every([3, 5]).days();
+
+// When using the dayOfWeek measurement, you can pass days names.
+recurrence = myDate.recur().every(["Monday", "wed"]).daysOfWeek();
+
+// Month names also work when using monthOfYear.
+recurrence = myDate.recur().every(["Jan", "february"], "monthsOfYear");
+```
+
+`every()` will override the last every if a measurement was not provied. The following line will create a reccurence for every 5 days.
+```js
+recurrence  = myDate.recur().every(1).every(5).days();
+```
+If you need to specify multiple units, pass an array to every().
+
+
+### Intervals
+moment-recur supports intervals for days, weeks, months, and years. Measurments may be singular or plural (ex: `day()` vs `days()`). Intervals *must* have a start date defined.
+
+```js
+var myDate, interval;
+
+// Create a date to start from
+myDate = moment("01/01/2014");
+
+// A daily interval - will match every day.
+interval = myDate.recur().every(1).day();
+
+// A bi-weekly interval - will match any date that is exactly 2 weeks from myDate.
+interval = myDate.recur().every(2).weeks();
+
+// A quarterly interval - will match any date that is exactly 3 months from myDate.
+interval = myDate.recur().every(3).months();
+
+// A yearly interval - will match any date that is exactly 1 year from myDate.
+interval = myDate.recur().every(1).years();
+
+// Will match any date that is exactly 3 days and 2 weeks from myDate.
+interval = myDate.recur().every(3).days()
+                         .every(2).weeks();
+```
+
+
+### Fixed Dates
+Fixed dates do not depend on a start date. They define a unit of another unit. For instance, a day of a month, or a month of a year. Measurments may be singular or plural (ex: `dayOfMonth()` vs `daysOfMonth()`).
+
+```js
+var fixed;
+
+// Will match any date that is on Sunday or Monday.
+fixed = moment.recur().every(["Sunday", 1]).daysOfWeek();
+
+// Will match any date that is the first or tenth day of any month.
+fixed = moment.recur().every([1, 10]).daysOfMonth();
+
+// Will match any date that is in the first or third week of any month.
+fixed = moment.recur().every([1, 3]).weeksOfMonth();
+
+// Will match any date that is in the 20th week of any year.
+fixed = moment.recur().every(20).weekOfYear();
+
+// Will match any date that is in January of any year.
+fixed = moment.recur().every("January").monthsOfYear();
+
+// You can also combine these rules to match specific dates.
+// For instance, this will match only on Valentines day
+var valentines = moment.recur().every(14).daysOfMonth()
+                               .every("Februray").monthsOfYear();
+```
+
+
+Using the Rules
+---------------
+
+### Matching
+The `matches()` function will test a date to check if all of the recurrence rules match. It returns `true` if the date matches, `false` otherwise.
+```js
+var interval = moment("01/01/2014").recur().every(2).days();
+interval.matches("01/02/2014"); // false
+interval.matches("01/03/2014"); // true
+```
+
+You may also see if a date matches before the start date or after the end date by passing `true` as the second argument to `matches()`.
+```js
+interval.matches("12/30/2013"); // false
+interval.matches("12/30/2013", true); // true
+```
+
+
+### Exceptions
+To prevent a date from matching that would normally match, use the `except()` function.
+
+```js
+var recurrence = moment("01/01/2014").recur().every(1).day();
+recurrence.except("01/02/2014");
+recurrence.matches("01/02/2014"); // false
+```
+
+
+### Overriding and Forgetting
+If a rule is created with the same measurement of a previous rule, it will override the previous rule. Rules can also be removed from a recurrence.
+
+```js
+// Create a recurrence that matches every day, with an exception
+var recurrence = moment("01/01/2014").recur().every(1).day().except("01/03/2014");
+
+// This will override the previous rule and match every 2 days instead.
+recurrence.every(2).days();
+
+// Exceptions can also be removed by passing a date to the forget() function.
+recurrence.forget("01/03/2014");
+
+// Rules can be removed by passing the measurement to the forget() function.
+recurrence.forget("days");
+```
+
+
+### Generating Dates
+It is also possible to generate dates from the rules. These functions require a starting date. The recurrence's start date will be used, but it is also possible to set a temporary "from" date using the `fromDate()` function.
+
+```js
+var recurrence, nextDates;
+
+// Create a recurrence
+recurrence = moment("01/01/2014").recur().every(2).days();
+
+// Generate the next three dates as moments
+// Outputs: [moment("01/03/2014"), moment("01/05/2014"), moment("01/07/2014")]
+nextDates = recurrence.next(3); 
+
+// Generate the next three dates, formatted in long form
+// Outputs: ["01/03/2014", "01/05/2014", "01/07/2014"]
+nextDates = recurrence.next(3, "L");
+
+// Generate previous three dates, formatted in long form
+// Outputs: ["12/30/2013", "12/28/2013", "12/26/2013"]
+nextDates = recurrence.previous(3, "L");
+```
+
+If your recurrence does not have a start date set, or if it does and you want to start at a different date, use the `fromDate()` method first.
+```js
+recurrence.fromDate("02/05/2014");
+
+// Outputs: ["02/07/2014", "02/09/2014", "02/11/2014"]
+nextDates = recurrence.next(3, "L");
+```
+
+*Important Note:* These functions may be very inefficient/slow. They work by attempting to match every date from the start of a range until the desired number of dates have been generated. So if you attempt to get 10 dates for a rule that matches once a year, it will run the match function for ~3650 days.
+
+
+Options and Other Methods
+-------------------------
+moment-recur provides a few methods for getting/setting options, as well as two utility methods: export and repeats.
+
+### Options
+Get/Set the Start Date
+```js
+recurrence.startDate(); // Get
+recurrence.startDate("01/01/2014"); // Set
+```
+
+Get/Set the End Date
+```js
+recurrence.endDate(); // Get
+recurrence.endDate("01/01/2014"); // Set
+```
+
+Get/Set a temporary "From Date" for use with generating dates
+```js
+recurrence.fromDate(); // Get
+recurrence.fromDate("01/01/2014"); // Set
+```
+
+Get/Set the start of week day. 0 (Sunday) through 6 (Saturday)
+```js
+recurrence.startOfWeekDay(); // Get
+recurrence.startOfWeekDay(2); // Set
+```
+
+### Utility Methods
+Check to see if recurrence has rules (repeats)
+```js
+recurrence.repeats(); // true/false
+```
+
+Export all options and rules as an object. This can be used to store recurrences in a database.
+*Note:* This does not export the "From Date" which is considered a temporary option.
+```js
+recurrence.export();
+```
+
+License
+-------
+UNLICENSE - see UNLICENSE file and [unlicense.org](http://unlicense.org/) for details.

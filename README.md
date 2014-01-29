@@ -137,6 +137,13 @@ If you need to specify multiple units, pass an array to `every()`.
 ### Intervals
 moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Intervals **must** have a start date defined.
 
+Possible Intervals Include:
+* day / days
+* week / weeks
+* month / months
+* year /years
+
+#### Examples
 ```js
 var myDate, interval;
 
@@ -163,9 +170,17 @@ interval = myDate.recur().every(3).days().every(2).months(); // Won't work
 ```
 
 
-### Fixed Dates
-Fixed dates do not depend on a start date. They define a unit of another unit. For instance, a day of a month, or a month of a year. Measurements may be singular or plural (ex: `dayOfMonth()` vs `daysOfMonth()`).
+### Fixed Measures
+Fixed measures do not depend on a start date. They define a unit of another unit. For instance, a day of a month, or a month of a year. Measurements may be singular or plural (ex: `dayOfMonth()` vs `daysOfMonth()`).
 
+Possible Fixed Measurements Include:
+* dayOfWeek / daysOfWeek
+* dayOfMonth / daysOfMonth
+* weekOfMonth / weeksOfMonth
+* weekOfYear / weeksOfYear
+* monthOfYear / monthsOfYear
+
+#### Examples
 ```js
 var fixed;
 

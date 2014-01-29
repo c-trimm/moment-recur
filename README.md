@@ -155,9 +155,11 @@ interval = myDate.recur().every(3).months();
 // A yearly interval - will match any date that is exactly 1 year from myDate.
 interval = myDate.recur().every(1).years();
 
-// Will match any date that is exactly 3 days and 2 weeks from myDate.
-interval = myDate.recur().every(3).days()
-                         .every(2).weeks();
+// It is possible to match multiple units of a single measure using an array.
+interval = myDate.recur().every([3, 5]).days();
+
+// It is NOT possible to create compound intervals. The following will never match.
+interval = myDate.recur().every(3).days().every(2).months(); // Won't work
 ```
 
 

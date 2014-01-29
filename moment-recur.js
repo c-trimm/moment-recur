@@ -141,6 +141,15 @@
             // Get the unit based on the required measure of the date
             var unit = date[unitType]();
             
+            console.log({
+                measure: measure,
+                list: list,
+                date: date,
+                unitType: unitType,
+                unit: unit,
+                inlist: list[unit]
+            });
+            
             // If the unit is in our list, return true, else return false
             if ( list[unit] ) {
                 return true;
@@ -282,11 +291,11 @@
             else if ( units === Object(units) ) {
                 list = units;
             }
-            else if ( toString.call(units) == '[object Number]' ) {
+            else if ( (toString.call(units) == '[object Number]') || (toString.call(units) == '[object String]') ) {
                 list[units] = true;
             }
             else {
-                throw Error("Provide an array, object, or number when passing units!");
+                throw Error("Provide an array, object, string or number when passing units!");
             }
             
             return list;

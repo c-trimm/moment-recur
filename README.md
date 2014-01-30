@@ -345,7 +345,7 @@ recurrence.save();
 ### momentjs Functions
 The `monthWeek()` method can be used to determine the week of the month a date is in.
 ```js
-moment("01/01/2014").monthWeek(); // 1
+moment("01/01/2014").monthWeek(); // 0
 ```
 
 The `dateOnly()` method can be used to remove any time information from a moment.

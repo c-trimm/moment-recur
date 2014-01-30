@@ -297,7 +297,7 @@
         // Private function to check if a date is an exception
         function isException(exceptions, date) {
             for (var i = 0, len = exceptions.length; i < len; i++ ) {
-                if (exceptions[i].isSame(date)) {
+                if (moment(exceptions[i]).isSame(date)) {
                     return true;
                 }
             }

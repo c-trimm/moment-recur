@@ -293,15 +293,14 @@ moment-recur provides a few methods for getting/setting options, as well as two 
 ### Options
 Options can be set when creating a recurrence or using the getter/setter methods listed below.
 
-Set options upon creation. Note that the units for rules are converted to objects, so it is not recommended to set rules this way.
+Set options upon creation. Note that the units for rules are converted to objects, so it is not recommended to set rules this way. They can be set in the options so that they can be imported.
 ```js
 moment().recur({
     start: "01/01/2014",
     end: "12/31/2014",
-    startOfWeekDay: 0
+    startOfWeek: 0,
     rules: [
-        { units: {  1 : true }, measure: "days" }, 
-        { units: { 20 : true }, measure: "daysOfMonth" }
+        { units: {  2 : true }, measure: "days" }
     ],
     exceptions: ["01/05/2014"]
 });

@@ -8,8 +8,8 @@ The rule matching concept is borrowed from the excellent [node-date-recur](https
 var rInterval = moment( "01/01/2014" ).recur().every(2).days();
 rInterval.matches( "01/03/2014" ); // true
 
-var rFixed = moment.recur().every(10).dayOfMonth();
-rFixed.matches( "05/10/2014" ); // true
+var rCalendar = moment.recur().every(10).dayOfMonth();
+rCalendar.matches( "05/10/2014" ); // true
 ```
 
 Getting Started
@@ -134,14 +134,14 @@ recurrence  = myDate.recur().every(1).every(5).days();
 If you need to specify multiple units, pass an array to `every()`.
 
 
-### Intervals
-moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Intervals **must** have a start date defined.
+### Length Intervals
+moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Length Intervals **must** have a start date defined.
 
-Possible Intervals Include:
+Possible Length Intervals Include:
 * day / days
 * week / weeks
 * month / months
-* year /years
+* year / years
 
 #### Examples
 ```js
@@ -170,10 +170,10 @@ interval = myDate.recur().every(3).days().every(2).months(); // Won't work
 ```
 
 
-### Fixed Measures
-Fixed measures do not depend on a start date. They define a unit of another unit. For instance, a day of a month, or a month of a year. Measurements may be singular or plural (ex: `dayOfMonth()` vs `daysOfMonth()`).
+### Calendar Intervals
+Calendar Intervals do not depend on a start date. They define a unit of another unit. For instance, a day of a month, or a month of a year. Measurements may be singular or plural (ex: `dayOfMonth()` vs `daysOfMonth()`).
 
-Possible Fixed Measurements Include:
+Possible Calendar Intervals Include:
 * dayOfWeek / daysOfWeek
 * dayOfMonth / daysOfMonth
 * weekOfMonth / weeksOfMonth
@@ -182,22 +182,22 @@ Possible Fixed Measurements Include:
 
 #### Examples
 ```js
-var fixed;
+var cal;
 
 // Will match any date that is on Sunday or Monday.
-fixed = moment.recur().every(["Sunday", 1]).daysOfWeek();
+cal = moment.recur().every(["Sunday", 1]).daysOfWeek();
 
 // Will match any date that is the first or tenth day of any month.
-fixed = moment.recur().every([1, 10]).daysOfMonth();
+cal = moment.recur().every([1, 10]).daysOfMonth();
 
 // Will match any date that is in the first or third week of any month.
-fixed = moment.recur().every([1, 3]).weeksOfMonth();
+cal = moment.recur().every([1, 3]).weeksOfMonth();
 
 // Will match any date that is in the 20th week of any year.
-fixed = moment.recur().every(20).weekOfYear();
+cal = moment.recur().every(20).weekOfYear();
 
 // Will match any date that is in January of any year.
-fixed = moment.recur().every("January").monthsOfYear();
+cal = moment.recur().every("January").monthsOfYear();
 
 // You can also combine these rules to match specific dates.
 // For instance, this will match only on Valentines day

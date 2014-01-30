@@ -5,15 +5,8 @@ var jasmine = jasmine, describe = describe, it = it, moment = moment, expect = e
 
 
 // TOTEST:
-// Fixed Date Types
-// Array Units
-// Override Rule
 // Export Rules
-// Export Settings
-// Import rules/settings on creation
 // Repeats function
-// Forget Rules
-// getNext/getPrevious
 
 var startDate = "01/01/2013";
 var endDate = "01/01/2014";
@@ -122,73 +115,144 @@ describe("The every() function", function() {
 });
 
 describe("An interval", function() {
+    it("should not match a date before the start date", function() {
+        var start = moment(startDate);
+        var before = start.clone().subtract(1, "day");
+        var recurrence = start.recur();
+        recurrence.every(1, "day");
+        expect(recurrence.matches(before)).toBe(false);
+    });
+    
+    it("should not match a date after the end date", function() {
+        var start = moment(startDate);
+        var after = moment(endDate).add(1, "day");
+        var recurrence = start.recur();
+        recurrence.endDate(endDate).every(1, "day");
+        expect(recurrence.matches(after)).toBe(false);
+    });
+    
     it("can be daily", function() {
         var recurrence = moment(startDate).recur().every(2).days();
         expect(recurrence.matches( moment(startDate).add(2, "days") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(3, "days") )).toBe(false);
     });
     
     it("can be weekly", function() {
         var recurrence = moment(startDate).recur().every(2).weeks();
         expect(recurrence.matches( moment(startDate).add(2, "weeks") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(3, "weeks") )).toBe(false);
     });
     
     it("can be monthly", function() {
         var recurrence = moment(startDate).recur().every(3).months();
         expect(recurrence.matches( moment(startDate).add(3, "months") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(2, "months") )).toBe(false);
     });
     
     it("can be yearly", function() {
-        var recurrence = moment(startDate).recur().every(1).years();
-        expect(recurrence.matches( moment(startDate).add(1, "year") )).toBe(true);
+        var recurrence = moment(startDate).recur().every(2).years();
+        expect(recurrence.matches( moment(startDate).add(2, "year") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(3, "year") )).toBe(false);
     });
     
-    it("can match an array of intervals", function() {
+    it("can be an array of intervals", function() {
         var recurrence = moment(startDate).recur().every([3,5]).days();
         expect(recurrence.matches( moment(startDate).add(3, "days"))).toBe(true);
         expect(recurrence.matches( moment(startDate).add(5, "days"))).toBe(true);
-    });
-    
-    it("can be compound", function() {
-        var recurrence = moment(startDate).recur().every(3).days().every(1).month();
-        expect(recurrence.matches( moment(startDate).add(3, "days").add(1, "month") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(4, "days"))).toBe(false);
     });
 });
 
+describe("The fixed measure", function() {
+    it("daysOfWeek should work", function() {
+        var recurrence = moment.recur().every(["Sunday", 1]).daysOfWeek();
+        expect(recurrence.matches( moment().day("Sunday") )).toBe(true);
+        expect(recurrence.matches( moment().day(1) )).toBe(true);
+        expect(recurrence.matches( moment().day(3) )).toBe(false);
+    }); 
+    
+    it("daysOfMonth should work", function() {
+        var recurrence = moment.recur().every([1, 10]).daysOfMonth();
+        expect(recurrence.matches( moment().date(1) )).toBe(true);
+        expect(recurrence.matches( moment().date(10) )).toBe(true);
+        expect(recurrence.matches( moment().date(15) )).toBe(false);
+    }); 
+    
+    it("weeksOfMonth should work", function() {
+        var recurrence = moment.recur().every([1, 3]).weeksOfMonth();
+        expect(recurrence.matches( moment(startDate).date(6) )).toBe(true);
+        expect(recurrence.matches( moment(startDate).date(26) )).toBe(true);
+        expect(recurrence.matches( moment(startDate).date(27) )).toBe(false);
+    }); 
+    
+    it("weeksOfYear should work", function() {
+        var recurrence = moment.recur().every(20).weekOfYear();
+        expect(recurrence.matches( moment("05/14/2014") )).toBe(true);
+        expect(recurrence.matches( moment(startDate) )).toBe(false);
+    }); 
+    
+    it("monthsOfYear should work", function() {
+        var recurrence = moment.recur().every("January").monthsOfYear();
+        expect(recurrence.matches( moment().month("January") )).toBe(true);
+        expect(recurrence.matches( moment().month("February") )).toBe(false);
+    }); 
+    
+    it("rules can be combined", function() {
+        var valentines = moment.recur().every(14).daysOfMonth()
+                                       .every("Februray").monthsOfYear();
+        expect(valentines.matches( moment("02/14/2014") )).toBe(true);
+        expect(valentines.matches( moment(startDate) )).toBe(false);
+    }); 
+});
 
-describe("every", function() {
-    var today, recur, next;
-    
-    beforeEach(function() {
-        today = moment(startDate);
-        next = today.clone();
-        recur = today.recur();
+describe("Rules", function() {
+    it("should be overridden when duplicated", function() {
+        var recurrence = moment("01/01/2014").recur().every(1).day();
+        recurrence.every(2).days();
+        expect(recurrence.rules.length).toBe(1);
     });
     
-    it("interval should not match a date before the start date", function() {
-        var before = today.clone().subtract(1, "day");
-        recur.every(1, "day");
-        expect(recur.matches(before)).toBe(false);
+    it("should be forgettable", function() {
+        var recurrence = moment("01/01/2014").recur().every(1).day();
+        recurrence.forget("days");
+        expect(recurrence.rules.length).toBe(0);
+    });
+});
+
+describe("Future Dates", function() {
+    it("can be generated", function() {
+        var recurrence, nextDates;
+        recurrence = moment("01/01/2014").recur().every(2).days();
+        console.log(recurrence);
+        nextDates = recurrence.next(3, "L");
+        console.log(nextDates);
+        expect(nextDates.length).toBe(3);
+        expect(nextDates[0]).toBe("01/03/2014");
+        expect(nextDates[1]).toBe("01/05/2014");
+        expect(nextDates[2]).toBe("01/07/2014");
     });
     
-    it("interval should not match a date after the end date", function() {
-        var after = moment(endDate).add(1, "day");
-        recur.endDate(endDate).every(1, "day");
-        expect(recur.matches(after)).toBe(false);
+    it("can start from a temporary 'from' date", function() {
+        var recurrence, nextDates;
+        recurrence = moment("01/01/2014").recur().every(2).days();
+        recurrence.fromDate("02/05/2014");
+        nextDates = recurrence.next(3, "L");
+        expect(nextDates.length).toBe(3);
+        expect(nextDates[0]).toBe("02/06/2014");
+        expect(nextDates[1]).toBe("02/08/2014");
+        expect(nextDates[2]).toBe("02/10/2014");
     });
-    
-    it("interval should match at specified intervals", function() {
-        var matches;
-        
-        recur.every([2, 5], "days");
-        
-        matches = recur.matches(next.add(2, "days")); // 2 days
-        expect(matches).toBe(true);
-        
-        matches = recur.matches(next.add(3, "days")); // 5 days
-        expect(matches).toBe(true);
-        
-        matches = recur.matches(next.add(2, "days")); // 7 days
-        expect(matches).toBe(false);
+});
+
+describe("Previous Dates", function() {
+    it("can be generated", function() {
+        var recurrence, nextDates;
+        recurrence = moment("01/01/2014").recur().every(2).days();
+        nextDates = recurrence.previous(3, "L");
+        expect(nextDates.length).toBe(3);
+        expect(nextDates[0]).toBe("12/30/2013");
+        expect(nextDates[1]).toBe("12/28/2013");
+        expect(nextDates[2]).toBe("12/26/2013");
     });
 });
 
@@ -210,5 +274,50 @@ describe("Exceptions", function() {
         recur.except(exception);
         recur.forget(exception);
         expect(recur.matches(exception)).toBe(true);
+    });
+});
+
+describe("Options", function() {
+    it("should be importable", function() {
+        var recurrence = moment().recur({
+            start: "01/01/2014",
+            end: "12/31/2014",
+            startOfWeek: 2,
+            rules: [
+                { units: {  2 : true }, measure: "days" }
+            ],
+            exceptions: ["01/05/2014"]
+        });
+        
+        expect(recurrence.startDate().format("L")).toBe("01/01/2014");
+        expect(recurrence.endDate().format("L")).toBe("12/31/2014");
+        expect(recurrence.startOfWeekDay()).toBe(2);
+        expect(recurrence.rules.length).toBe(1);
+        expect(recurrence.exceptions.length).toBe(1);
+        expect(recurrence.matches("01/03/2014")).toBe(true);
+        expect(recurrence.matches("01/05/2014")).toBe(false);
+    });
+    
+    it("shold be exportable", function() {
+        var recurrence = moment("01/01/2014").recur("12/31/2014").every(2, "days").except("01/05/2014").startOfWeekDay(2);
+        var data = recurrence.save();
+        expect(data.start).toBe("01/01/2014");
+        expect(data.end).toBe("12/31/2014");
+        expect(data.startOfWeek).toBe(2);
+        expect(data.exceptions[0]).toBe("01/05/2014");
+        expect(data.rules[0].units[2]).toBe(true);
+        expect(data.rules[0].measure).toBe("days");
+    });
+});
+
+describe("The repeats() function", function() {
+    it("should return true when there are rules set", function() {
+        var recurrence = moment().recur().every(1).days();
+        expect(recurrence.repeats()).toBe(true);
+    });
+    
+    it("should return false when there are no rules set", function() {
+        var recurrence = moment().recur();
+        expect(recurrence.repeats()).toBe(false);
     });
 });

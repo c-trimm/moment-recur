@@ -163,7 +163,7 @@ describe("An interval", function() {
     });
 });
 
-describe("The fixed measure", function() {
+describe("The Calendar Interval", function() {
     it("daysOfWeek should work", function() {
         var recurrence = moment.recur().every(["Sunday", 1]).daysOfWeek();
         expect(recurrence.matches( moment().day("Sunday") )).toBe(true);
@@ -176,7 +176,7 @@ describe("The fixed measure", function() {
         expect(recurrence.matches( moment().date(1) )).toBe(true);
         expect(recurrence.matches( moment().date(10) )).toBe(true);
         expect(recurrence.matches( moment().date(15) )).toBe(false);
-    }); 
+    });
     
     it("weeksOfMonth should work", function() {
         var recurrence = moment.recur().every([1, 3]).weeksOfMonth();
@@ -202,7 +202,14 @@ describe("The fixed measure", function() {
                                        .every("Februray").monthsOfYear();
         expect(valentines.matches( moment("02/14/2014") )).toBe(true);
         expect(valentines.matches( moment(startDate) )).toBe(false);
-    }); 
+    });
+    
+    it("can be passed units, without every()", function() {
+        var recurrence = moment.recur().daysOfMonth([1,3]);
+        expect(recurrence.matches("01/01/2014")).toBe(true);
+        expect(recurrence.matches("01/03/2014")).toBe(true);
+        expect(recurrence.matches("01/06/2014")).toBe(false);
+    });
 });
 
 describe("Rules", function() {

@@ -171,6 +171,19 @@
             "monthsOfYear": "calendar"
         };
         
+        // a dictionary of plural and singular measures
+        var measures = {
+            "days": "day",
+            "weeks": "week",
+            "months": "month",
+            "years": "year",
+            "daysOfWeek": "dayOfWeek",
+            "daysOfMonth": "dayOfMonth",
+            "weeksOfMonth": "weekOfMonth",
+            "weeksOfYear": "weekOfYear",
+            "monthsOfYear": "monthOfYear"
+        };
+        
         
         /////////////////////////////////
         // Private Methods             //
@@ -366,6 +379,14 @@
             return true;
         }
         
+        // Private function to create measure functions
+        function createMeasure(measure) {
+            return function(units) {
+                this.every.call(this, units, measure);
+                return this;
+            };
+        }
+        
         
         //////////////////////
         // Public Functions //
@@ -491,46 +512,15 @@
         
         // Set the units and, optionally, the measure
         Recur.prototype.every = function(units, measure) {
-            this.units = unitsToObject(units);
-            this.measure = pluralize(measure);
-            return trigger.call(this);
-        };
-        
-        // Methods to set the measure
-        Recur.prototype.day = Recur.prototype.days = function() {
-            this.measure = "days";
-            return trigger.call(this);
-        };
-        Recur.prototype.week = Recur.prototype.weeks = function() {
-            this.measure = "weeks";
-            return trigger.call(this);
-        };
-        Recur.prototype.month = Recur.prototype.months = function() {
-            this.measure = "months";
-            return trigger.call(this);
-        };
-        Recur.prototype.year = Recur.prototype.years = function() {
-            this.measure = "years";
-            return trigger.call(this);
-        };
-        Recur.prototype.daysOfWeek = Recur.prototype.dayOfWeek = function() {
-            this.measure = "daysOfWeek";
-            return trigger.call(this);
-        };
-        Recur.prototype.daysOfMonth = Recur.prototype.dayOfMonth = function() {
-            this.measure = "daysOfMonth";
-            return trigger.call(this);
-        };
-        Recur.prototype.weeksOfMonth = Recur.prototype.weekOfMonth = function() {
-            this.measure = "weeksOfMonth";
-            return trigger.call(this);
-        };
-        Recur.prototype.weeksOfYear = Recur.prototype.weekOfYear = function() {
-            this.measure = "weeksOfYear";
-            return trigger.call(this);
-        };
-        Recur.prototype.monthsOfYear = Recur.prototype.monthOfYear = function() {
-            this.measure = "monthsOfYear";
+            
+            if ((typeof units !== "undefined") && (units !== null)) {
+                this.units = unitsToObject(units);
+            }
+            
+            if ((typeof measure !== "undefined") && (measure !== null)) {
+                this.measure = pluralize(measure);
+            }
+            
             return trigger.call(this);
         };
         
@@ -593,6 +583,13 @@
         Recur.prototype.previous = function(num, format) {
             return getOccurances.call(this, num, format, "previous");
         };
+        
+        // Create the measure functions (days(), months(), daysOfMonth(), monthsOfYear(), etc.)
+        for (var measure in measures) {
+            if (ruleTypes.hasOwnProperty(measure)) {
+                Recur.prototype[measure] = Recur.prototype[measures[measure]] = createMeasure(measure);
+            }
+        }
         
         return Recur;
     })();

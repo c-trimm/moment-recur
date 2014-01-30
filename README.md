@@ -133,6 +133,10 @@ recurrence  = myDate.recur().every(1).every(5).days();
 ```
 If you need to specify multiple units, pass an array to `every()`.
 
+You may also pass the units directly to the interval functions (listed below) instead of using `every()`.
+```js
+var recurrence = moment.recur().monthOfYear("January");
+```
 
 ### Length Intervals
 moment-recur supports intervals for days, weeks, months, and years. Measurements may be singular or plural (ex: `day()` vs `days()`). Length Intervals **must** have a start date defined.

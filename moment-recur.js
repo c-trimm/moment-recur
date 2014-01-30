@@ -238,20 +238,22 @@
             }
             
             // Start from the from date, or the start date if from is not set.
-            currentDate = this.from || this.start;
+            currentDate = (this.from || this.start).clone();
             
             // Get the next N dates
             while(dates.length < num) {
-                if (this.matches(currentDate, true)) {
-                    date = format ? currentDate.format(format) : currentDate.clone();
-                    dates.push(date);
-                }
-                
                 if (type === "next") {
                     currentDate.add(1, "day");
                 }
                 else {
                     currentDate.subtract(1, "day");
+                }
+                
+                console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
+                
+                if (this.matches(currentDate, true)) {
+                    date = format ? currentDate.format(format) : currentDate.clone();
+                    dates.push(date);
                 }
             }
             
@@ -351,11 +353,13 @@
                         return false;
                     }
                 }
-                
-                if (type === "calendar") {
+                else if (type === "calendar") {
                     if ( !Calendar.match(rule.measure, rule.units, date) ) {
                         return false;
                     }
+                }
+                else {
+                    return false;
                 }
             }
             
@@ -582,12 +586,12 @@
         
         // Get next N occurances
         Recur.prototype.next = function(num, format) {
-            getOccurances.call(this, num, format, "next");
+            return getOccurances.call(this, num, format, "next");
         };
         
         // Get previous N occurances
         Recur.prototype.previous = function(num, format) {
-            getOccurances.call(this, num, format, "previous");
+            return getOccurances.call(this, num, format, "previous");
         };
         
         return Recur;

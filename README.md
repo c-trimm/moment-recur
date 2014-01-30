@@ -276,6 +276,7 @@ nextDates = recurrence.previous(3, "L");
 
 If your recurrence does not have a start date set, or if it does but you want to start at a different date, use the `fromDate()` method first.
 ```js
+var recurrence = moment("01/01/2014").recur().every(2).days();
 recurrence.fromDate("02/05/2014");
 
 // Outputs: ["02/06/2014", "02/08/2014", "02/10/2014"]

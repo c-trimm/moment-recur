@@ -278,7 +278,7 @@ If your recurrence does not have a start date set, or if it does but you want to
 ```js
 recurrence.fromDate("02/05/2014");
 
-// Outputs: ["02/07/2014", "02/09/2014", "02/11/2014"]
+// Outputs: ["02/06/2014", "02/08/2014", "02/10/2014"]
 nextDates = recurrence.next(3, "L");
 ```
 

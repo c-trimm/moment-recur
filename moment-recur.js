@@ -401,9 +401,6 @@
             if ( options.end ) {
                 this.end = moment(options.end).dateOnly();
             }
-        
-            // Default to Sunday (0)
-            this.startOfWeek = options.startOfWeek || 0;
     
             // Our list of rules, all of which must match
             this.rules = options.rules || [];
@@ -468,16 +465,6 @@
             return this.from;
         };
         
-        // Get/Set the starting day of the week
-        Recur.prototype.startOfWeekDay = function(day) {
-            if (typeof day !== 'undefined') {
-                this.startOfWeek = day;
-                return this;
-            }
-            
-            return this.startOfWeek;
-        };
-        
         // Export the settings, rules, and exceptions of this recurring date
         Recur.prototype.save = function() {
             var data = {};
@@ -495,7 +482,6 @@
                 data.exceptions.push(this.exceptions[i].format("L"));
             }
             
-            data.startOfWeek = this.startOfWeek;
             data.rules = this.rules;
             
             return data;
@@ -592,7 +578,7 @@
         }
         
         return Recur;
-    })();
+    }());
     
     // Recur can be created the following ways:
     // moment.recur()

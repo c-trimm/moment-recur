@@ -74,8 +74,7 @@ recurrence = moment(start).recur( end );
 // Finally, you can create a recurrence and pass in an entire set of options.
 recurrence = moment().recur({
     start: "01/01/2014",
-    end: "01/01/2015",
-    startOfWeek: 1
+    end: "01/01/2015"
 });
 ```
 
@@ -92,8 +91,7 @@ recurrence = moment.recur( start, end );
 // Create a recurrence, passing set of options.
 recurrence = moment.recur({
     start: "01/01/2014",
-    end: "01/01/2015",
-    startOfWeek: 1
+    end: "01/01/2015"
 });
 ```
 
@@ -302,7 +300,6 @@ Set options upon creation. Note that the units for rules are converted to object
 moment().recur({
     start: "01/01/2014",
     end: "12/31/2014",
-    startOfWeek: 0,
     rules: [
         { units: {  2 : true }, measure: "days" }
     ],
@@ -326,12 +323,6 @@ Get/Set a temporary "From Date" for use with generating dates
 ```js
 recurrence.fromDate(); // Get
 recurrence.fromDate("01/01/2014"); // Set
-```
-
-Get/Set the start of week day. 0 (Sunday) through 6 (Saturday)
-```js
-recurrence.startOfWeekDay(); // Get
-recurrence.startOfWeekDay(2); // Set
 ```
 
 ### Utility Methods

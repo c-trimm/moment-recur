@@ -81,11 +81,6 @@ describe("Setting", function() {
         expect(recur.endDate().format("L")).toBe(endDate);
     });
     
-    it("'startOfWeek' should be getable/setable with startOfWeekDay()", function() {
-        recur.startOfWeekDay(1);
-        expect(recur.startOfWeekDay()).toBe(1);
-    });
-    
     it("'from' should be getable/setable with fromDate()", function() {
         recur.fromDate(startDate);
         expect(recur.fromDate().format("L")).toBe(startDate);
@@ -289,7 +284,6 @@ describe("Options", function() {
         var recurrence = moment().recur({
             start: "01/01/2014",
             end: "12/31/2014",
-            startOfWeek: 2,
             rules: [
                 { units: {  2 : true }, measure: "days" }
             ],
@@ -298,7 +292,6 @@ describe("Options", function() {
         
         expect(recurrence.startDate().format("L")).toBe("01/01/2014");
         expect(recurrence.endDate().format("L")).toBe("12/31/2014");
-        expect(recurrence.startOfWeekDay()).toBe(2);
         expect(recurrence.rules.length).toBe(1);
         expect(recurrence.exceptions.length).toBe(1);
         expect(recurrence.matches("01/03/2014")).toBe(true);
@@ -306,11 +299,10 @@ describe("Options", function() {
     });
     
     it("shold be exportable", function() {
-        var recurrence = moment("01/01/2014").recur("12/31/2014").every(2, "days").except("01/05/2014").startOfWeekDay(2);
+        var recurrence = moment("01/01/2014").recur("12/31/2014").every(2, "days").except("01/05/2014");
         var data = recurrence.save();
         expect(data.start).toBe("01/01/2014");
         expect(data.end).toBe("12/31/2014");
-        expect(data.startOfWeek).toBe(2);
         expect(data.exceptions[0]).toBe("01/05/2014");
         expect(data.rules[0].units[2]).toBe(true);
         expect(data.rules[0].measure).toBe("days");

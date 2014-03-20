@@ -289,7 +289,7 @@
         function unitsToObject(units) {
             var list = {};
             
-            if ( toString.call(units) == '[object Array]' ) {
+            if ( Object.prototype.toString.call(units) == '[object Array]' ) {
                 units.forEach(function(v) {
                     list[v] = true;
                 });
@@ -297,7 +297,7 @@
             else if ( units === Object(units) ) {
                 list = units;
             }
-            else if ( (toString.call(units) == '[object Number]') || (toString.call(units) == '[object String]') ) {
+            else if ( (Object.prototype.toString.call(units) == '[object Number]') || (Object.prototype.toString.call(units) == '[object String]') ) {
                 list[units] = true;
             }
             else {

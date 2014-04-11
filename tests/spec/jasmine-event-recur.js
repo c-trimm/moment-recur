@@ -258,6 +258,29 @@ describe("Previous Dates", function() {
     });
 });
 
+describe("All Dates", function() {
+    it("can be generated", function() {
+        var recurrence, allDates;
+        recurrence = moment("01/01/2014").recur("01/07/2014").every(2).days();
+        allDates = recurrence.all("L");
+        expect(allDates.length).toBe(4);
+        expect(allDates[0]).toBe("01/01/2014");
+        expect(allDates[1]).toBe("01/03/2014");
+        expect(allDates[2]).toBe("01/05/2014");
+        expect(allDates[3]).toBe("01/07/2014");
+    });
+
+    it("can start from a temporary 'from' date", function() {
+        var recurrence, allDates;
+        recurrence = moment().recur("01/01/2014", "01/08/2014").every(2).days();
+        recurrence.fromDate("01/05/2014");
+        allDates = recurrence.all("L");
+        expect(allDates.length).toBe(2);
+        expect(allDates[0]).toBe("01/05/2014");
+        expect(allDates[1]).toBe("01/07/2014");
+    });
+});
+
 describe("Exceptions", function() {
     var mo, exception, recur;
     

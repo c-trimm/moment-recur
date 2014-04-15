@@ -285,6 +285,14 @@ describe("All Dates", function() {
             recurrence.all("L");
         }).toThrow(new Error("Start date cannot be later than end date."));
     });
+
+    it('should only generate a single date when start date and end date are the same', function() {
+        var recurrence, allDates;
+        recurrence = moment().recur("01/01/2014", "01/01/2014").every(1).days();
+        allDates = recurrence.all("L");
+        expect(allDates.length).toBe(1);
+        expect(allDates[0]).toBe("01/01/2014");
+    });
 });
 
 describe("Exceptions", function() {

@@ -285,7 +285,8 @@
                 
                 //console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
                 
-                if (this.matches(currentDate, true)) {
+                // Don't match outside the date if generating all dates within start/end
+                if (this.matches(currentDate, (type==="all"?false:true))) {
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
                 }

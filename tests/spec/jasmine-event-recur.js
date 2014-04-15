@@ -225,9 +225,7 @@ describe("Future Dates", function() {
     it("can be generated", function() {
         var recurrence, nextDates;
         recurrence = moment("01/01/2014").recur().every(2).days();
-        console.log(recurrence);
         nextDates = recurrence.next(3, "L");
-        console.log(nextDates);
         expect(nextDates.length).toBe(3);
         expect(nextDates[0]).toBe("01/03/2014");
         expect(nextDates[1]).toBe("01/05/2014");
@@ -278,6 +276,14 @@ describe("All Dates", function() {
         expect(allDates.length).toBe(2);
         expect(allDates[0]).toBe("01/05/2014");
         expect(allDates[1]).toBe("01/07/2014");
+    });
+
+    it('should throw error if start date is after end date', function() {
+        var recurrence, allDates;
+        recurrence = moment().recur("07/26/2017", "08/01/2013").every(2).days();
+        expect(function() {
+            recurrence.all("L");
+        }).toThrow(new Error("Start date cannot be later than end date."));
     });
 });
 

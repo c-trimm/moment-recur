@@ -254,6 +254,10 @@
                 throw Error("Cannot get all occurances without an end date.");
             }
 
+            if( !!this.end && (this.start > this.end) ) {
+                throw Error("Start date cannot be later than end date.");
+            }
+            
             // Return empty set if the caller doesn't want any for next/prev
             if(type !== "all" && !(num > 0)) {
                 return dates;
@@ -264,7 +268,7 @@
             
             // Include the initial date to the results if wanting all dates
             if(type === "all") {
-                if (this.matches(currentDate, true)) {
+                if (this.matches(currentDate, false)) {
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
                 }

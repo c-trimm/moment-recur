@@ -262,8 +262,6 @@
                     currentDate.subtract(1, "day");
                 }
                 
-                console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
-                
                 if (this.matches(currentDate, true)) {
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);

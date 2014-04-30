@@ -285,6 +285,15 @@ recurrence.fromDate("02/05/2014");
 nextDates = recurrence.next(3, "L");
 ```
 
+With both a start date and an end date set, you can generate all dates within that range that match the pattern (including the start/end dates).
+```js
+var recurrence = moment().recur("01/01/2014", "01/07/2014").every(2).days();
+
+// Outputs: ["01/01/2014", "01/03/2014", "01/05/2014", "01/07/2014"]
+allDates = recurrence.all("L");
+```
+
+
 **Important Note:** These functions may be very inefficient/slow. They work by attempting to match every date from the start of a range until the desired number of dates have been generated. So if you attempt to get 10 dates for a rule that matches once a year, it will run the match function for ~3650 days.
 
 

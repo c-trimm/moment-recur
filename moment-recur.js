@@ -237,7 +237,7 @@
             return this;
         }
         
-        // Private method to get next and previous occurances
+        // Private method to get next, previous or all occurances
         function getOccurances(num, format, type) {
             var currentDate, date;
             var dates = [];
@@ -250,23 +250,48 @@
                 throw Error("Cannot get occurances without start or from date.");
             }
             
+            if ( type === "all" && !this.end ) {
+                throw Error("Cannot get all occurances without an end date.");
+            }
+
+            if( !!this.end && (this.start > this.end) ) {
+                throw Error("Start date cannot be later than end date.");
+            }
+            
+            // Return empty set if the caller doesn't want any for next/prev
+            if(type !== "all" && !(num > 0)) {
+                return dates;
+            }
+
             // Start from the from date, or the start date if from is not set.
             currentDate = (this.from || this.start).clone();
             
-            // Get the next N dates
-            while(dates.length < num) {
-                if (type === "next") {
+            // Include the initial date to the results if wanting all dates
+            if(type === "all") {
+                if (this.matches(currentDate, false)) {
+                    date = format ? currentDate.format(format) : currentDate.clone();
+                    dates.push(date);
+                }
+            }
+
+            // Get the next N dates, if num is null then infinite
+            while(dates.length < (num===null ? dates.length+1 : num)) {
+                if (type === "next" || type === "all") {
                     currentDate.add(1, "day");
                 }
                 else {
                     currentDate.subtract(1, "day");
                 }
                 
-                console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
+                //console.log("Match: " + currentDate.format("L") + " - " + this.matches(currentDate, true));
                 
-                if (this.matches(currentDate, true)) {
+                // Don't match outside the date if generating all dates within start/end
+                if (this.matches(currentDate, (type==="all"?false:true))) {
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
+                }
+                if(type === "all" && currentDate >= this.end) {
+                    break;
                 }
             }
             
@@ -570,6 +595,11 @@
             return getOccurances.call(this, num, format, "previous");
         };
         
+        // Get all occurances between start and end date
+        Recur.prototype.all = function(format) {
+            return getOccurances.call(this, null, format, "all");
+        };
+
         // Create the measure functions (days(), months(), daysOfMonth(), monthsOfYear(), etc.)
         for (var measure in measures) {
             if (ruleTypes.hasOwnProperty(measure)) {

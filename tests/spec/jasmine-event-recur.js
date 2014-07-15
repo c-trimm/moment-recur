@@ -62,6 +62,14 @@ describe("Creating a recurring moment", function() {
         var recur = nowMoment.recur();
         expect(recur.start.format("L")).toBe(nowDate);
     });
+
+    it("from moment function, with starting moment and end parameter, which is a moment object - moment(start).recur(end)", function() {
+        var startMoment = moment(startDate);
+        var endMoment = moment(endDate);
+        var recur = moment(startMoment).recur(endMoment);
+        expect(recur.start.format("L")).toBe(startDate);
+        expect(recur.end.format("L")).toBe(endDate);
+    });
 });
 
 describe("Setting", function() {

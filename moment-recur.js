@@ -617,7 +617,7 @@
     // moment.recur(start, end)
     moment.recur = function(start, end) {
         // If we have an object, use it as a set of options
-        if ( start === Object(start)) {
+        if ( start === Object(start) && !moment.isMoment(start)) {
             return new Recur( start );
         }
 
@@ -633,7 +633,7 @@
     // moment().recur(end)
     moment.fn.recur = function(start, end) {
         // If we have an object, use it as a set of options
-        if ( start === Object(start)) {
+        if ( start === Object(start) && !moment.isMoment(start)) {
             // if we have no start date, use the moment
             if ( typeof start.start === 'undefined' ) {
                 start.start = this;

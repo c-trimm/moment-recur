@@ -28,7 +28,7 @@ Simply include the momentjs script, then the moment-recur script.
 moment-recur also works with RequireJS. Include it just like any other script.
 ```js
 define(["moment", "moment-recur"], function(moment){
-    //you probably won't need a reference to mocur itself, so include it last.
+    //you probably won't need a reference to moment-recur itself, so include it last.
 });
 ```
 

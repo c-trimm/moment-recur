@@ -1,8 +1,8 @@
 {
-  "name": "moment-recur",
+  "name": "moment-recur-js",
   "version": "1.0.1",
   "description": "A momentjs plugin for matching and generating recurring dates.",
-  "main": "moment-recur.min.js",
+  "main": "moment-recur.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/c-trimm/moment-recur.git"

@@ -12,6 +12,11 @@ var rCalendar = moment.recur().every(10).dayOfMonth();
 rCalendar.matches( "05/10/2014" ); // true
 ```
 
+Release Notes
+---------------
+1.0.1 Moved repository.  Fixed some minor issues.  Updated and ran tests against moment v2.9.0.
+
+
 Getting Started
 ---------------
 moment-recur can be included in your project a few different ways.

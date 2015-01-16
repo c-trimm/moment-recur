@@ -7,7 +7,7 @@ module.exports = function (config) {
     files: [
       'bower_components/moment/moment.js',
       'moment-recur.js',
-      'test/spec/*.js',
+      'tests/spec/*.js',
     ],
     exclude: [],
     port: 8080,

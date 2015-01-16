@@ -12,6 +12,11 @@ var rCalendar = moment.recur().every(10).dayOfMonth();
 rCalendar.matches( "05/10/2014" ); // true
 ```
 
+Release Notes
+---------------
+1.0.1 Moved repository.  Fixed some minor issues.  Updated and ran tests against moment v2.9.0.
+
+
 Getting Started
 ---------------
 moment-recur can be included in your project a few different ways.
@@ -28,7 +33,7 @@ Simply include the momentjs script, then the moment-recur script.
 moment-recur also works with RequireJS. Include it just like any other script.
 ```js
 define(["moment", "moment-recur"], function(moment){
-    //you probably won't need a reference to mocur itself, so include it last.
+    //you probably won't need a reference to moment-recur itself, so include it last.
 });
 ```
 

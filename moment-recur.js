@@ -34,16 +34,22 @@
         }
 
         function matchInterval(type, units, start, date) {
-            // Get the difference between the start date and the provded date,
-            // using the required measure based on the type of rule
-            var diff = start.diff(date, type, true);
+            // Get the difference between the start date and the provided date,
+            // using the required measure based on the type of rule'
+            var diff = null;
+            if( date.isBefore(start) ) {
+                diff = start.diff(date, type, true);
+            } else {
+                diff = date.diff(start, type, true);
+            }
+            diff = parseInt(diff);
 
             // Check to see if any of the units provided match the date
             for (var unit in units) {
                 if (units.hasOwnProperty(unit)) {
                     unit = parseInt(unit, 10);
 
-                    // If the units devide evenly into the difference, we have a match
+                    // If the units divide evenly into the difference, we have a match
                     if ((diff % unit) === 0) {
                         return true;
                     }
@@ -349,7 +355,6 @@
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -441,7 +446,11 @@
             this.rules = options.rules || [];
 
             // Our list of exceptions. Match always fails on these dates.
-            this.exceptions = options.exceptions || [];
+            var exceptions = options.exceptions || [];
+            this.exceptions = [];
+            for(i = 0; i < exceptions.length; i++) {
+                this.except(exceptions[i]);
+            }
 
             // Temporary units integer, array, or object. Does not get imported/exported.
             this.units = null;
@@ -559,6 +568,7 @@
 
             // If valid date, try to remove it from exceptions
             if (whatMoment.isValid()) {
+                whatMoment = whatMoment.dateOnly(); // change to date only for perfect comparison
                 for (i = 0, len = this.exceptions.length; i < len; i++) {
                     if (whatMoment.isSame(this.exceptions[i])) {
                         this.exceptions.splice(i, 1);
@@ -679,7 +689,7 @@
 
     // Plugin for removing all time information from a given date
     moment.fn.dateOnly = function() {
-        return this.hours(0).minutes(0).seconds(0).milliseconds(0);
+        return this.hours(0).minutes(0).seconds(0).milliseconds(0).add('minute',this.utcOffset()).utcOffset(0);
     };
 
 

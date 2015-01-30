@@ -304,12 +304,13 @@ describe("All Dates", function() {
 });
 
 describe("Exceptions", function() {
-    var mo, exception, recur;
+    var mo, exception, recur, exceptionWithTz;
 
     beforeEach(function() {
         mo = moment(startDate);
-        exception = mo.clone().add(1, "day");
+        exception = mo.clone().add(3, "day");
         recur = mo.clone().recur().every(1, "days");
+        exceptionWithTz = moment.tz(exception.format('YYYY-MM-DD'), 'Asia/Hong_Kong');
     });
 
     it("should prevent exception days from matching", function() {
@@ -317,10 +318,38 @@ describe("Exceptions", function() {
         expect(recur.matches(exception)).toBe(false);
     });
 
+    it('should work when the passed in exception is in a different time zone', function() {
+        recur.except(exception);
+        expect(recur.matches(exceptionWithTz)).toBe(false);
+    });
+
     it("should be removeable", function() {
         recur.except(exception);
         recur.forget(exception);
         expect(recur.matches(exception)).toBe(true);
+    });
+});
+
+describe('Exceptions with weeks', function() {
+    var mo, exception, recur, exceptionWithTz;
+
+    beforeEach(function() {
+        mo = moment(startDate);
+        exception = mo.clone().add(7, "day");
+        recur = mo.clone().recur().every(1, "weeks");
+        exceptionWithTz = moment.tz(exception.format('YYYY-MM-DD'), 'Asia/Hong_Kong');
+    });
+
+    it('should not match on the exception day', function() {
+        expect(recur.matches(exception)).toBe(true);
+        recur.except(exception);
+        expect(recur.matches(exception)).toBe(false);
+    });
+
+    it('should not match on the exception day', function() {
+        expect(recur.matches(exceptionWithTz)).toBe(true);
+        recur.except(exception);
+        expect(recur.matches(exceptionWithTz)).toBe(false);
     });
 });
 

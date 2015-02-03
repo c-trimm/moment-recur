@@ -167,11 +167,20 @@ describe("An interval", function() {
 });
 
 describe("The Calendar Interval", function() {
-    it("daysOfWeek should work", function() {
-        var recurrence = moment.recur().every(["Sunday", 1]).daysOfWeek();
-        expect(recurrence.matches( moment().day("Sunday") )).toBe(true);
-        expect(recurrence.matches( moment().day(1) )).toBe(true);
-        expect(recurrence.matches( moment().day(3) )).toBe(false);
+
+    describe("daysOfWeek", function() {
+        it("should work", function () {
+            var recurrence = moment.recur().every(["Sunday", 1]).daysOfWeek();
+            expect(recurrence.matches(moment().day("Sunday"))).toBe(true);
+            expect(recurrence.matches(moment().day(1))).toBe(true);
+            expect(recurrence.matches(moment().day(3))).toBe(false);
+        });
+
+        it("should work with timezones", function () {
+            var recurrence = moment.tz('2015-01-25',"America/Vancouver").recur().every(["Sunday", 1]).daysOfWeek();
+            var check = moment.tz('2015-02-01',"Asia/Hong_Kong");
+            expect(recurrence.matches(check)).toBe(true);
+        });
     });
 
     it("daysOfMonth should work", function() {

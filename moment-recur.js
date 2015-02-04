@@ -42,7 +42,10 @@
             } else {
                 diff = date.diff(start, type, true);
             }
-            diff = parseInt(diff);
+            if( type == 'days') {
+                // if we are dealing with days, we deal with whole days only.
+                diff = parseInt(diff);
+            }
 
             // Check to see if any of the units provided match the date
             for (var unit in units) {

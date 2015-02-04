@@ -143,6 +143,7 @@ describe("An interval", function() {
     it("can be weekly", function() {
         var recurrence = moment(startDate).recur().every(2).weeks();
         expect(recurrence.matches( moment(startDate).add(2, "weeks") )).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(2, "days")  )).toBe(false);
         expect(recurrence.matches( moment(startDate).add(3, "weeks") )).toBe(false);
     });
 
@@ -150,19 +151,23 @@ describe("An interval", function() {
         var recurrence = moment(startDate).recur().every(3).months();
         expect(recurrence.matches( moment(startDate).add(3, "months") )).toBe(true);
         expect(recurrence.matches( moment(startDate).add(2, "months") )).toBe(false);
+        expect(recurrence.matches( moment(startDate).add(2, "days"))).toBe(false);
     });
 
     it("can be yearly", function() {
         var recurrence = moment(startDate).recur().every(2).years();
         expect(recurrence.matches( moment(startDate).add(2, "year") )).toBe(true);
         expect(recurrence.matches( moment(startDate).add(3, "year") )).toBe(false);
+        expect(recurrence.matches( moment(startDate).add(2, "days")  )).toBe(false);
     });
 
     it("can be an array of intervals", function() {
         var recurrence = moment(startDate).recur().every([3,5]).days();
         expect(recurrence.matches( moment(startDate).add(3, "days"))).toBe(true);
         expect(recurrence.matches( moment(startDate).add(5, "days"))).toBe(true);
+        expect(recurrence.matches( moment(startDate).add(10, "days"))).toBe(true);
         expect(recurrence.matches( moment(startDate).add(4, "days"))).toBe(false);
+        expect(recurrence.matches( moment(startDate).add(8, "days"))).toBe(false);
     });
 });
 
@@ -184,10 +189,15 @@ describe("The Calendar Interval", function() {
     });
 
     it("daysOfMonth should work", function() {
-        var recurrence = moment.recur().every([1, 10]).daysOfMonth();
-        expect(recurrence.matches( moment().date(1) )).toBe(true);
-        expect(recurrence.matches( moment().date(10) )).toBe(true);
-        expect(recurrence.matches( moment().date(15) )).toBe(false);
+        var recurrence = moment('2015-01-01').recur().every([1, 10]).daysOfMonth();
+        expect(recurrence.matches( moment('2015-01-01'))).toBe(true);
+        expect(recurrence.matches( moment('2015-01-02'))).toBe(false);
+        expect(recurrence.matches( moment('2015-01-10'))).toBe(true);
+        expect(recurrence.matches( moment('2015-01-15'))).toBe(false);
+        expect(recurrence.matches( moment('2015-02-01'))).toBe(true);
+        expect(recurrence.matches( moment('2015-02-02'))).toBe(false);
+        expect(recurrence.matches( moment('2015-02-10'))).toBe(true);
+        expect(recurrence.matches( moment('2015-02-15'))).toBe(false);
     });
 
     it("weeksOfMonth should work", function() {

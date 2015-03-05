@@ -154,7 +154,7 @@
             if ( list[unit] ) {
                 return true;
             }
-            
+
             // match on end of month days
             if ( unitType === 'date' && unit == date.add(1, 'months').date(0).format('D') && unit < 31) {
                 while ( unit <= 31 ) {
@@ -451,7 +451,7 @@
             // Our list of exceptions. Match always fails on these dates.
             var exceptions = options.exceptions || [];
             this.exceptions = [];
-            for(i = 0; i < exceptions.length; i++) {
+            for(var i = 0; i < exceptions.length; i++) {
                 this.except(exceptions[i]);
             }
 

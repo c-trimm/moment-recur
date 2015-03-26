@@ -246,6 +246,53 @@ describe("Rules", function() {
         recurrence.forget("days");
         expect(recurrence.rules.length).toBe(0);
     });
+
+    it("should be possible to see if one exists", function() {
+        var recurrence = moment("01/01/2014").recur().every(1).day();
+        expect(recurrence.hasRule("days")).toBe(true);
+        expect(recurrence.hasRule("months")).toBe(false);
+    });
+});
+
+describe("weeksOfMonthByDay()", function() {
+    it("can recur on the 1st and 3rd Sundays of the month", function() {
+        var recurrence;
+        recurrence = moment.recur()
+            .every(["Sunday"]).daysOfWeek()
+            .every([0, 2]).weeksOfMonthByDay();
+        expect(recurrence.matches(moment(startDate))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(6))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(8))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(13))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(20))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(27))).toBe(false);
+    });
+
+    it("can recur on the 2nd, 4th and 5th Sundays and Thursdays of the month", function() {
+        var recurrence;
+        recurrence = moment.recur()
+            .every(["Sunday", "Thursday"]).daysOfWeek()
+            .every([1, 3, 4]).weeksOfMonthByDay();
+        expect(recurrence.matches(moment(startDate).date(6))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(13))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(20))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(27))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(3))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(10))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(17))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(24))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(31))).toBe(true);
+    });
+
+    it("will throw an error if used without daysOfWeek()", function() {
+        var recurrence, caught = { message: false };
+        try {
+            recurrence = moment.recur().every(0).weeksOfMonthByDay();
+        } catch (e) {
+            caught = e;
+        }
+        expect(caught.message).toBe('weeksOfMonthByDay must be combined with daysOfWeek');
+    });
 });
 
 describe("Future Dates", function() {

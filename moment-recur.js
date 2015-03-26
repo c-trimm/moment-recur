@@ -75,17 +75,19 @@
             "daysOfMonth": "date",
             "daysOfWeek": "day",
             "weeksOfMonth": "monthWeek",
+            "weeksOfMonthByDay": "monthWeekByDay",
             "weeksOfYear": "weeks",
             "monthsOfYear": "months"
         };
 
         // Dictionary of ranges based on measures
         var ranges = {
-            "daysOfMonth"  : { low: 1, high: 31 },
-            "daysOfWeek"   : { low: 0, high: 6 },
-            "weeksOfMonth" : { low: 0, high: 4 },
-            "weeksOfYear"  : { low: 0, high: 52 },
-            "monthsOfYear" : { low: 0, high: 11 }
+            "daysOfMonth"       : { low: 1, high: 31 },
+            "daysOfWeek"        : { low: 0, high: 6 },
+            "weeksOfMonth"      : { low: 0, high: 4 },
+            "weeksOfMonthByDay" : { low: 0, high: 4 },
+            "weeksOfYear"       : { low: 0, high: 52 },
+            "monthsOfYear"      : { low: 0, high: 11 }
         };
 
         // Private function for cehcking the range of calendar values
@@ -186,6 +188,7 @@
             "daysOfWeek": "calendar",
             "daysOfMonth": "calendar",
             "weeksOfMonth": "calendar",
+            "weeksOfMonthByDay": "calendar",
             "weeksOfYear": "calendar",
             "monthsOfYear": "calendar"
         };
@@ -199,6 +202,7 @@
             "daysOfWeek": "dayOfWeek",
             "daysOfMonth": "dayOfMonth",
             "weeksOfMonth": "weekOfMonth",
+            "weeksOfMonthByDay": "weekOfMonthByDay",
             "weeksOfYear": "weekOfYear",
             "monthsOfYear": "monthOfYear"
         };
@@ -244,6 +248,10 @@
             // Remove the temporary rule data
             this.units = null;
             this.measure = null;
+
+            if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
+                throw Error("weeksOfMonthByDay must be combined with daysOfWeek");
+            }
 
             // Remove existing rule based on measure
             for (var i = 0; i < this.rules.length; i++) {
@@ -384,6 +392,9 @@
 
                 case "weekOfMonth":
                     return "weeksOfMonth";
+
+                case "weekOfMonthByDay":
+                    return "weeksOfMonthByDay";
 
                 case "weekOfYear":
                     return "weeksOfYear";
@@ -590,6 +601,17 @@
             }
         };
 
+        // Checks if a rule has been set on the chain
+        Recur.prototype.hasRule = function(measure) {
+            var i, len;
+            for (i = 0, len = this.rules.length; i < len; i++) {
+                if (this.rules[i].measure === pluralize(measure)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         // Attempts to match a date to the rules
         Recur.prototype.matches = function(dateToMatch, ignoreStartEnd) {
             var date = moment(dateToMatch).dateOnly();
@@ -688,6 +710,31 @@
         var day0 = this.clone().startOf("week");
 
         return day0.diff(week0, "weeks");
+    };
+
+    // Plugin for calculating the occurrence of the day of the week in the month.
+    // Similar to `moment().monthWeek()`, the return value is zero-indexed.
+    // A return value of 2 means the date is the 3rd occurence of that day
+    // of the week in the month.
+    moment.fn.monthWeekByDay = function(date) {
+        var day, week0, day0, diff;
+
+        // date obj
+        day = this.clone();
+
+        // First day of the first week of the month
+        week0 = this.clone().startOf("month").startOf("week");
+
+        // First day of week
+        day0 = this.clone().startOf("week");
+
+        diff = day0.diff(week0, "weeks");
+
+        if (day.subtract(diff, "weeks").month() === this.clone().month()) {
+            return diff;
+        }
+
+        return diff - 1;
     };
 
     // Plugin for removing all time information from a given date

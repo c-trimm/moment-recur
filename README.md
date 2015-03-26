@@ -207,6 +207,12 @@ cal = moment.recur().every("January").monthsOfYear();
 // For instance, this will match only on Valentines day
 var valentines = moment.recur().every(14).daysOfMonth()
                                .every("Februray").monthsOfYear();
+
+// A weekOfMonthByDay interval is available for combining with
+// the daysOfWeek to achieve "nth weekday of month" recurrences.
+// The following matches every 1st and 3rd Thursday of the month.
+cal = moment.recur().every("Thursday").daysOfWeek()
+                    .every([0, 2]).weeksOfMonthByDay();
 ```
 
 

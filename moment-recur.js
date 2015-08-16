@@ -76,8 +76,8 @@
             "daysOfWeek": "day",
             "weeksOfMonth": "monthWeek",
             "weeksOfMonthByDay": "monthWeekByDay",
-            "weeksOfYear": "weeks",
-            "monthsOfYear": "months"
+            "weeksOfYear": "week",
+            "monthsOfYear": "month"
         };
 
         // Dictionary of ranges based on measures

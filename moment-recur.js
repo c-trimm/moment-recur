@@ -27,8 +27,12 @@
                 }
             }
 
+			if (measure !== 'wholeMonths') {
+				measure = measure.toLowerCase();
+			}
+			
             return {
-                measure: measure.toLowerCase(),
+                measure: measure,
                 units: units
             };
         }
@@ -37,10 +41,20 @@
             // Get the difference between the start date and the provided date,
             // using the required measure based on the type of rule'
             var diff = null;
+            
+            // if the type is wholeMonths use the whole month
             if( date.isBefore(start) ) {
-                diff = start.diff(date, type, true);
+            	if( type == 'wholeMonths' ) {
+            		diff = start.diff(date, 'month');
+            	} else {
+                	diff = start.diff(date, type, true);
+                }
             } else {
-                diff = date.diff(start, type, true);
+            	if( type == 'wholeMonths' ) {
+            		diff = date.diff(start, 'month');
+            	} else {
+                	diff = date.diff(start, type, true);
+                }
             }
             if( type == 'days') {
                 // if we are dealing with days, we deal with whole days only.
@@ -184,6 +198,7 @@
             "days": "interval",
             "weeks": "interval",
             "months": "interval",
+            "wholeMonths": "interval",
             "years": "interval",
             "daysOfWeek": "calendar",
             "daysOfMonth": "calendar",
@@ -198,6 +213,7 @@
             "days": "day",
             "weeks": "week",
             "months": "month",
+            "wholeMonths": "wholeMonth",
             "years": "year",
             "daysOfWeek": "dayOfWeek",
             "daysOfMonth": "dayOfMonth",
@@ -251,6 +267,10 @@
 
             if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
                 throw Error("weeksOfMonthByDay must be combined with daysOfWeek");
+            }
+            
+            if (rule.measure === 'wholeMonths' && (!this.hasRule('daysOfWeek') || !this.hasRule('weeksOfMonthByDay'))) {
+            	throw Error("wholeMonths must be combined with weeksOfMonthByDay and daysOfWeek");
             }
 
             // Remove existing rule based on measure
@@ -380,6 +400,9 @@
 
                 case "month":
                     return "months";
+                    
+                case "wholeMonth":
+                	return "wholeMonths";
 
                 case "year":
                     return "years";

@@ -26,11 +26,7 @@
                     }
                 }
             }
-
-			if (measure !== 'wholeMonths') {
-				measure = measure.toLowerCase();
-			}
-			
+            
             return {
                 measure: measure,
                 units: units
@@ -40,26 +36,7 @@
         function matchInterval(type, units, start, date) {
             // Get the difference between the start date and the provided date,
             // using the required measure based on the type of rule'
-            var diff = null;
-            
-            // if the type is wholeMonths use the whole month
-            if( date.isBefore(start) ) {
-            	if( type == 'wholeMonths' ) {
-            		diff = start.diff(date, 'month');
-            	} else {
-                	diff = start.diff(date, type, true);
-                }
-            } else {
-            	if( type == 'wholeMonths' ) {
-            		diff = date.diff(start, 'month');
-            	} else {
-                	diff = date.diff(start, type, true);
-                }
-            }
-            if( type == 'days') {
-                // if we are dealing with days, we deal with whole days only.
-                diff = parseInt(diff);
-            }
+            var diff = getDiff(type, start, date);
 
             // Check to see if any of the units provided match the date
             for (var unit in units) {
@@ -74,6 +51,27 @@
             }
 
             return false;
+        }
+        
+        function getDiff(type, start, date) {
+        	var diff = null;
+        	var getFloatingPoint = true;
+        	
+        	if(type == 'wholeMonth') {
+        		// if the type is wholeMonths use the whole month.
+        		type = 'month';
+        		getFloatingPoint = false;
+        	}
+        	if( date.isBefore(start) ) {
+            	diff = start.diff(date, type, getFloatingPoint);            	
+            } else {
+            	diff = date.diff(start, type, getFloatingPoint);            	
+            }
+            if( type == 'days') {
+                // if we are dealing with days, we deal with whole days only.
+                diff = parseInt(diff);
+            }
+            return diff;
         }
 
         return {
@@ -243,17 +241,11 @@
                 return this;
             }
 
-            // Error if we don't have a valid ruleType
-            if (ruleType !== "calendar" && ruleType !== "interval") {
-                throw Error("Invlid measure provided: " + this.measure);
-            }
+            // Validate the rule
+            this.validateRule(ruleType);
 
             // Create the rule
             if (ruleType === "interval") {
-                if ( !this.start ) {
-                    throw Error("Must have a start date set to set an interval!");
-                }
-
                 rule = Interval.create(this.units, this.measure);
             }
 
@@ -264,14 +256,6 @@
             // Remove the temporary rule data
             this.units = null;
             this.measure = null;
-
-            if (rule.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
-                throw Error("weeksOfMonthByDay must be combined with daysOfWeek");
-            }
-            
-            if (rule.measure === 'wholeMonths' && (!this.hasRule('daysOfWeek') || !this.hasRule('weeksOfMonthByDay'))) {
-            	throw Error("wholeMonths must be combined with weeksOfMonthByDay and daysOfWeek");
-            }
 
             // Remove existing rule based on measure
             for (var i = 0; i < this.rules.length; i++) {
@@ -633,6 +617,25 @@
                 }
             }
             return false;
+        };
+
+        // Validate rules
+        Recur.prototype.validateRule = function(ruleType) {
+            // Error if we don't have a valid ruleType
+            if (ruleType !== "calendar" && ruleType !== "interval") {
+                throw Error("Invalid measure provided: " + this.measure);
+            }
+            if (ruleType === "interval") {
+                if ( !this.start ) {
+                    throw Error("Must have a start date set to set an interval!");
+                }
+            }
+            if (this.measure === 'weeksOfMonthByDay' && !this.hasRule('daysOfWeek')) {
+                throw Error("weeksOfMonthByDay must be combined with daysOfWeek");
+            }
+            if (this.measure === 'wholeMonths' && (!this.hasRule('daysOfWeek') || !this.hasRule('weeksOfMonthByDay'))) {
+                throw Error("wholeMonths must be combined with weeksOfMonthByDay and daysOfWeek");
+            }
         };
 
         // Attempts to match a date to the rules

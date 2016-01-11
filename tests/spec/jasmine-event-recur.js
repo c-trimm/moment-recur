@@ -295,6 +295,63 @@ describe("weeksOfMonthByDay()", function() {
     });
 });
 
+describe("wholeMonths()", function() {
+	var a = moment(startDate);
+	var b = moment(endDate);
+	var d = b.diff(a, 'days');	
+	
+    it("can recur on the 1st and 3rd Sundays every 2 months", function() {
+	    var m = [];
+        var recurrence;
+        recurrence = moment(startDate).recur()
+            .every(["Sunday"]).daysOfWeek()
+            .every([0, 2]).weeksOfMonthByDay()
+            .every(2).wholeMonths();
+            
+        for (var i = 0; i <= d; i++) {
+			var check = moment(startDate).add(i, 'days');		
+			if ( recurrence.matches(check) ) {
+				m.push(check.format('L'));
+			}
+		}
+
+        expect((m.indexOf('01/06/2013') > -1)).toBe(true);
+        expect(m.indexOf('02/14/2013') > -1).toBe(false);
+        expect(m.indexOf('11/17/2013') > -1).toBe(true);
+    });
+
+    it("can recur on the 2nd, 4th and 5th Sundays and Thursdays every 5 months", function() {
+        var m = [];
+        var recurrence;
+        recurrence = moment(startDate).recur()
+            .every(["Sunday", "Thursday"]).daysOfWeek()
+            .every([1, 3, 4]).weeksOfMonthByDay()
+            .every(5).wholeMonths();
+        
+        for (var i = 0; i <= d; i++) {
+			var check = moment(startDate).add(i, 'days');
+			if ( recurrence.matches(check) ) {
+				m.push(check.format('L'));
+			}
+		}
+
+		expect(m.indexOf('01/13/2013') > -1).toBe(true);
+        expect(m.indexOf('02/15/2013') > -1).toBe(false);
+        expect(m.indexOf('06/30/2013') > -1).toBe(true);
+    });
+
+    it("will throw an error if used without daysOfWeek() and weeksOfMonthByDay()", function() {
+        var recurrence, caught = { message: false };
+        try {
+            recurrence = moment(startDate).recur().every(1).wholeMonths();
+        } catch (e) {
+            caught = e;
+        }
+        
+        expect(caught.message).toBe('wholeMonths must be combined with weeksOfMonthByDay and daysOfWeek');
+    });
+});
+
 describe("Future Dates", function() {
     it("can be generated", function() {
         var recurrence, nextDates;

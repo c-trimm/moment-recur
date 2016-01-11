@@ -334,7 +334,7 @@ describe("wholeMonths()", function() {
 				m.push(check.format('L'));
 			}
 		}
-		
+
 		expect(m.indexOf('01/13/2013') > -1).toBe(true);
         expect(m.indexOf('02/15/2013') > -1).toBe(false);
         expect(m.indexOf('06/30/2013') > -1).toBe(true);

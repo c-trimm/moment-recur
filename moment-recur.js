@@ -57,7 +57,7 @@
         	var diff = null;
         	var getFloatingPoint = true;
         	
-        	if(type == 'wholeMonth') {
+        	if(type == 'wholeMonths') {
         		// if the type is wholeMonths use the whole month.
         		type = 'month';
         		getFloatingPoint = false;

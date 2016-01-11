@@ -55,21 +55,20 @@
         
         function getDiff(type, start, date) {
         	var diff = null;
-        	var getFloatingPoint = true;
         	
         	if(type == 'wholeMonths') {
         		// if the type is wholeMonths use the whole month.
-        		type = 'month';
-        		getFloatingPoint = false;
-        	}
-        	if( date.isBefore(start) ) {
-            	diff = start.diff(date, type, getFloatingPoint);            	
-            } else {
-            	diff = date.diff(start, type, getFloatingPoint);            	
-            }
-            if( type == 'days') {
-                // if we are dealing with days, we deal with whole days only.
-                diff = parseInt(diff);
+                diff = Math.abs(date.month() - start.month()) + (Math.abs(date.year() - start.year()) * 12);
+        	} else {
+                if (date.isBefore(start)) {
+                    diff = start.diff(date, type, true);
+                } else {
+                    diff = date.diff(start, type, true);
+                }
+                if (type == 'days') {
+                    // if we are dealing with days, we deal with whole days only.
+                    diff = parseInt(diff);
+                }
             }
             return diff;
         }

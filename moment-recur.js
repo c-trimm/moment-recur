@@ -9,7 +9,7 @@
             moment = require('moment-timezone');
         } catch() {
         }
-        module.exports = factory();
+        module.exports = factory(moment);
     } else if (typeof define === 'function' && define.amd) {
         define('moment-recur', ['moment'], factory);
     } else {

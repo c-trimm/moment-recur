@@ -3,11 +3,12 @@
         var moment;
         try {
             moment = require('moment');
-        } catch() {
+        } catch(err) {
         }
         try {
             moment = require('moment-timezone');
-        } catch() {
+        } catch (err) {
+
         }
         module.exports = factory(moment);
     } else if (typeof define === 'function' && define.amd) {

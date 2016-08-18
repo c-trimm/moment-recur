@@ -26,6 +26,6 @@
   "scripts": {
     "test": "gulp test",
     "preinstall": "npm install bower gulp",
-    "postinstall": "bower install"
+    "postinstall": "bower install --allow-root"
   }
 }

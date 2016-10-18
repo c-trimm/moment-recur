@@ -21,7 +21,7 @@
             // Make sure all of the units are integers greater than 0.
             for (var unit in units) {
                 if (units.hasOwnProperty(unit)) {
-                    if ( parseInt(unit, 10) <= 0 ) {
+                    if (parseInt(unit, 10) <= 0) {
                         throw Error('Intervals must be greater than zero');
                     }
                 }
@@ -37,12 +37,12 @@
             // Get the difference between the start date and the provided date,
             // using the required measure based on the type of rule'
             var diff = null;
-            if( date.isBefore(start) ) {
+            if (date.isBefore(start)) {
                 diff = start.diff(date, type, true);
             } else {
                 diff = date.diff(start, type, true);
             }
-            if( type == 'days') {
+            if (type == 'days') {
                 // if we are dealing with days, we deal with whole days only.
                 diff = parseInt(diff);
             }
@@ -90,10 +90,10 @@
             "monthsOfYear"      : { low: 0, high: 11 }
         };
 
-        // Private function for cehcking the range of calendar values
+        // Private function for checking the range of calendar values
         function checkRange(low, high, list) {
             list.forEach(function(v) {
-                if ( v < low || v > high ) {
+                if (v < low || v > high) {
                     throw Error('Value should be in range ' + low + ' to ' + high);
                 }
             });
@@ -135,9 +135,9 @@
             for (var key in list) if (hasOwnProperty.call(list, key)) keys.push(key);
 
             // Make sure the listed units are in the measure's range
-            checkRange( ranges[measure].low,
-                        ranges[measure].high,
-                        keys );
+            checkRange(ranges[measure].low,
+                       ranges[measure].high,
+                       keys);
 
             return {
                 measure: measure,
@@ -153,14 +153,14 @@
             var unit = date[unitType]();
 
             // If the unit is in our list, return true, else return false
-            if ( list[unit] ) {
+            if (list[unit]) {
                 return true;
             }
 
             // match on end of month days
-            if ( unitType === 'date' && unit == date.add(1, 'months').date(0).format('D') && unit < 31) {
-                while ( unit <= 31 ) {
-                    if ( list[unit] ) {
+            if (unitType === 'date' && unit == date.add(1, 'months').date(0).format('D') && unit < 31) {
+                while (unit <= 31) {
+                    if (list[unit]) {
                         return true;
                     }
                     unit++;
@@ -229,12 +229,12 @@
 
             // Error if we don't have a valid ruleType
             if (ruleType !== "calendar" && ruleType !== "interval") {
-                throw Error("Invlid measure provided: " + this.measure);
+                throw Error("Invalid measure provided: " + this.measure);
             }
 
             // Create the rule
             if (ruleType === "interval") {
-                if ( !this.start ) {
+                if (!this.start) {
                     throw Error("Must have a start date set to set an interval!");
                 }
 
@@ -264,8 +264,8 @@
             return this;
         }
 
-        // Private method to get next, previous or all occurances
-        function getOccurances(num, format, type) {
+        // Private method to get next, previous or all occurrences
+        function getOccurrences(num, format, type) {
             var currentDate, date;
             var dates = [];
 
@@ -273,28 +273,28 @@
                 throw Error("Private method trigger() was called directly or not called as instance of Recur!");
             }
 
-            if ( !this.start && !this.from ) {
-                throw Error("Cannot get occurances without start or from date.");
+            if (!this.start && !this.from) {
+                throw Error("Cannot get occurrences without start or from date.");
             }
 
-            if ( type === "all" && !this.end ) {
-                throw Error("Cannot get all occurances without an end date.");
+            if (type === "all" && !this.end) {
+                throw Error("Cannot get all occurrences without an end date.");
             }
 
-            if( !!this.end && (this.start > this.end) ) {
+            if (!!this.end && (this.start > this.end)) {
                 throw Error("Start date cannot be later than end date.");
             }
 
             // Return empty set if the caller doesn't want any for next/prev
-            if(type !== "all" && !(num > 0)) {
+            if (type !== "all" && !(num > 0)) {
                 return dates;
             }
 
             // Start from the from date, or the start date if from is not set.
             currentDate = (this.from || this.start).clone();
 
-            // Include the initial date to the results if wanting all dates
-            if(type === "all") {
+            // Include the initial date in the results if wanting all dates
+            if (type === "all") {
                 if (this.matches(currentDate, false)) {
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
@@ -302,11 +302,10 @@
             }
 
             // Get the next N dates, if num is null then infinite
-            while(dates.length < (num===null ? dates.length+1 : num)) {
+            while (dates.length < (num===null ? dates.length+1 : num)) {
                 if (type === "next" || type === "all") {
                     currentDate.add(1, "day");
-                }
-                else {
+                } else {
                     currentDate.subtract(1, "day");
                 }
 
@@ -341,18 +340,15 @@
         function unitsToObject(units) {
             var list = {};
 
-            if ( Object.prototype.toString.call(units) == '[object Array]' ) {
+            if (Object.prototype.toString.call(units) == '[object Array]') {
                 units.forEach(function(v) {
                     list[v] = true;
                 });
-            }
-            else if ( units === Object(units) ) {
+            } else if (units === Object(units)) {
                 list = units;
-            }
-            else if ( (Object.prototype.toString.call(units) == '[object Number]') || (Object.prototype.toString.call(units) == '[object String]') ) {
+            } else if ((Object.prototype.toString.call(units) == '[object Number]') || (Object.prototype.toString.call(units) == '[object String]')) {
                 list[units] = true;
-            }
-            else {
+            } else {
                 throw Error("Provide an array, object, string or number when passing units!");
             }
 
@@ -361,7 +357,7 @@
 
         // Private function to check if a date is an exception
         function isException(exceptions, date) {
-            for (var i = 0, len = exceptions.length; i < len; i++ ) {
+            for (var i = 0, len = exceptions.length; i < len; i++) {
                 if (moment(exceptions[i]).isSame(date)) {
                     return true;
                 }
@@ -407,25 +403,23 @@
             }
         }
 
-        // Private funtion to see if all rules matche
+        // Private funtion to see if all rules match
         function matchAllRules(rules, date, start) {
             var i, len, rule, type;
 
-            for ( i = 0, len = rules.length; i < len; i++ ) {
+            for (i = 0, len = rules.length; i < len; i++) {
                 rule = rules[i];
                 type = ruleTypes[rule.measure];
 
                 if (type === "interval") {
-                    if ( !Interval.match(rule.measure, rule.units, start, date) ) {
+                    if (!Interval.match(rule.measure, rule.units, start, date)) {
                         return false;
                     }
-                }
-                else if (type === "calendar") {
-                    if ( !Calendar.match(rule.measure, rule.units, date) ) {
+                } else if (type === "calendar") {
+                    if (!Calendar.match(rule.measure, rule.units, date)) {
                         return false;
                     }
-                }
-                else {
+                } else {
                     return false;
                 }
             }
@@ -448,11 +442,11 @@
 
         // Recur Object Constrcutor
         var Recur = function(options) {
-            if ( options.start ) {
+            if (options.start) {
                 this.start = moment(options.start).dateOnly();
             }
 
-            if ( options.end ) {
+            if (options.end) {
                 this.end = moment(options.end).dateOnly();
             }
 
@@ -469,10 +463,10 @@
             // Temporary units integer, array, or object. Does not get imported/exported.
             this.units = null;
 
-            // Tempoarary measure type. Does not get imported/exported.
+            // Temporary measure type. Does not get imported/exported.
             this.measure = null;
 
-            // Tempoarary from date for next/previous. Does not get imported/exported.
+            // Temporary from date for next/previous. Does not get imported/exported.
             this.from = null;
 
             return this;
@@ -630,19 +624,19 @@
             return true;
         };
 
-        // Get next N occurances
+        // Get next N occurrences
         Recur.prototype.next = function(num, format) {
-            return getOccurances.call(this, num, format, "next");
+            return getOccurrences.call(this, num, format, "next");
         };
 
-        // Get previous N occurances
+        // Get previous N occurrences
         Recur.prototype.previous = function(num, format) {
-            return getOccurances.call(this, num, format, "previous");
+            return getOccurrences.call(this, num, format, "previous");
         };
 
-        // Get all occurances between start and end date
+        // Get all occurrences between start and end date
         Recur.prototype.all = function(format) {
-            return getOccurances.call(this, null, format, "all");
+            return getOccurrences.call(this, null, format, "all");
         };
 
         // Create the measure functions (days(), months(), daysOfMonth(), monthsOfYear(), etc.)
@@ -662,8 +656,8 @@
     // moment.recur(start, end)
     moment.recur = function(start, end) {
         // If we have an object, use it as a set of options
-        if ( start === Object(start) && !moment.isMoment(start)) {
-            return new Recur( start );
+        if (start === Object(start) && !moment.isMoment(start)) {
+            return new Recur(start);
         }
 
         // else, use the values passed
@@ -678,9 +672,9 @@
     // moment().recur(end)
     moment.fn.recur = function(start, end) {
         // If we have an object, use it as a set of options
-        if ( start === Object(start) && !moment.isMoment(start)) {
+        if (start === Object(start) && !moment.isMoment(start)) {
             // if we have no start date, use the moment
-            if ( typeof start.start === 'undefined' ) {
+            if (typeof start.start === 'undefined') {
                 start.start = this;
             }
 
@@ -688,7 +682,7 @@
         }
 
         // if there is no end value, use the start value as the end
-        if ( !end ) {
+        if (!end) {
             end = start;
             start = undefined;
         }
@@ -739,7 +733,7 @@
 
     // Plugin for removing all time information from a given date
     moment.fn.dateOnly = function() {
-        if (this.tz && typeof(moment.tz) == 'function' ) {
+        if (this.tz && typeof(moment.tz) == 'function') {
             return moment.tz(this.format('YYYY-MM-DD'), 'UTC');
         } else {
             return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(), "minute").utcOffset(0);

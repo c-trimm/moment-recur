@@ -75,7 +75,7 @@
             "daysOfMonth": "date",
             "daysOfWeek": "day",
             "weeksOfMonth": "monthWeek",
-            "weeksOfMonthByDay": "monthWeekByDay",
+            "weeksOfMonthByDay": "monthWeeksByDay",
             "weeksOfYear": "week",
             "monthsOfYear": "month"
         };
@@ -85,7 +85,7 @@
             "daysOfMonth"       : { low: 1, high: 31 },
             "daysOfWeek"        : { low: 0, high: 6 },
             "weeksOfMonth"      : { low: 0, high: 4 },
-            "weeksOfMonthByDay" : { low: 0, high: 4 },
+            "weeksOfMonthByDay" : { low: -5, high: 4 },
             "weeksOfYear"       : { low: 0, high: 52 },
             "monthsOfYear"      : { low: 0, high: 11 }
         };
@@ -150,20 +150,28 @@
             var unitType = unitTypes[measure];
 
             // Get the unit based on the required measure of the date
-            var unit = date[unitType]();
+            var units = date[unitType]();
 
-            // If the unit is in our list, return true, else return false
-            if (list[unit]) {
-                return true;
+            if (units.constructor !== Array) {
+                units = [ units ];
             }
 
-            // match on end of month days
-            if (unitType === 'date' && unit == date.add(1, 'months').date(0).format('D') && unit < 31) {
-                while (unit <= 31) {
-                    if (list[unit]) {
-                        return true;
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
+
+                // If the unit is in our list, return true, else return false
+                if (list[unit]) {
+                    return true;
+                }
+
+                // match on end of month days
+                if (unitType === 'date' && unit == date.add(1, 'months').date(0).format('D') && unit < 31) {
+                    while (unit <= 31) {
+                        if (list[unit]) {
+                            return true;
+                        }
+                        unit++;
                     }
-                    unit++;
                 }
             }
 
@@ -706,29 +714,46 @@
         return day0.diff(week0, "weeks");
     };
 
+    // Plugin for calculating the last week of the month of a date
+    moment.fn.lastMonthWeek = function() {
+        // Last day of the last week of the month (may be first week of next month)
+        var weekL = this.clone().endOf("month").endOf("week");
+
+        // Last day of week
+        var dayL = this.clone().endOf("week");
+
+        return dayL.diff(weekL, "weeks");
+    };
+
     // Plugin for calculating the occurrence of the day of the week in the month.
     // Similar to `moment().monthWeek()`, the return value is zero-indexed.
     // A return value of 2 means the date is the 3rd occurence of that day
     // of the week in the month.
     moment.fn.monthWeekByDay = function(date) {
-        var day, week0, day0, diff;
+        var diff = this.monthWeek();
 
-        // date obj
-        day = this.clone();
-
-        // First day of the first week of the month
-        week0 = this.clone().startOf("month").startOf("week");
-
-        // First day of week
-        day0 = this.clone().startOf("week");
-
-        diff = day0.diff(week0, "weeks");
-
-        if (day.subtract(diff, "weeks").month() === this.clone().month()) {
+        if (this.clone().subtract(diff, "weeks").month() === this.month()) {
             return diff;
         }
 
         return diff - 1;
+    };
+
+    // Plugin for calculating the last occurrence of the day of the week in the month.
+    // A return value of -3 means the date is the 3rd occurence of that day
+    // of the week from the end of the month.
+    moment.fn.lastMonthWeekByDay = function() {
+        var diff = this.lastMonthWeek();
+
+        if (this.clone().subtract(diff, "weeks").month() === this.month()) {
+            return diff - 1;
+        }
+
+            return diff;
+    };
+
+    moment.fn.monthWeeksByDay = function() {
+        return [ this.monthWeekByDay(), this.lastMonthWeekByDay() ];
     };
 
     // Plugin for removing all time information from a given date

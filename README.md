@@ -211,8 +211,13 @@ var valentines = moment.recur().every(14).daysOfMonth()
 // A weekOfMonthByDay interval is available for combining with
 // the daysOfWeek to achieve "nth weekday of month" recurrences.
 // The following matches every 1st and 3rd Thursday of the month.
+// (Note this cannot be combined at the moment with every(x).months() expression) 
 cal = moment.recur().every("Thursday").daysOfWeek()
                     .every([0, 2]).weeksOfMonthByDay();
+
+cal = moment.recur().every(moment("01/01/2014").day()).daysOfWeek()
+                    .every(moment("01/01/2014").monthWeekByDay()).weeksOfMonthByDay();
+
 ```
 
 

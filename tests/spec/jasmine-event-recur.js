@@ -284,6 +284,19 @@ describe("weeksOfMonthByDay()", function() {
         expect(recurrence.matches(moment(startDate).date(31))).toBe(true);
     });
 
+    it("can recur on the last and 3rd last Sundays of the month", function() {
+        var recurrence;
+        recurrence = moment.recur()
+            .every(["Sunday"]).daysOfWeek()
+            .every([-1, -3]).weeksOfMonthByDay();
+        expect(recurrence.matches(moment(startDate))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(6))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(8))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(13))).toBe(true);
+        expect(recurrence.matches(moment(startDate).date(20))).toBe(false);
+        expect(recurrence.matches(moment(startDate).date(27))).toBe(true);
+    });
+
     it("will throw an error if used without daysOfWeek()", function() {
         var recurrence, caught = { message: false };
         try {

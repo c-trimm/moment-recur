@@ -711,24 +711,7 @@
     // A return value of 2 means the date is the 3rd occurence of that day
     // of the week in the month.
     moment.fn.monthWeekByDay = function(date) {
-        var day, week0, day0, diff;
-
-        // date obj
-        day = this.clone();
-
-        // First day of the first week of the month
-        week0 = this.clone().startOf("month").startOf("week");
-
-        // First day of week
-        day0 = this.clone().startOf("week");
-
-        diff = day0.diff(week0, "weeks");
-
-        if (day.subtract(diff, "weeks").month() === this.clone().month()) {
-            return diff;
-        }
-
-        return diff - 1;
+        return Math.floor((this.date()-1)/7);
     };
 
     // Plugin for removing all time information from a given date

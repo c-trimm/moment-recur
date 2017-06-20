@@ -284,6 +284,19 @@ describe("weeksOfMonthByDay()", function() {
         expect(recurrence.matches(moment(startDate).date(31))).toBe(true);
     });
 
+    it("can recur on the 4th Wednesday of the month", function() {
+        var recurrence;
+        recurrence = moment.recur()
+            .every(moment('2017-09-27').day()).daysOfWeek()
+            .every(moment('2017-09-27').monthWeekByDay()).weeksOfMonthByDay();
+
+        expect(recurrence.matches(moment('2017-09-27'))).toBe(true);
+        expect(recurrence.matches(moment('2017-10-25'))).toBe(true);
+        expect(recurrence.matches(moment('2017-11-22'))).toBe(true);
+        expect(recurrence.matches(moment('2017-12-27'))).toBe(true);
+
+    });
+
     it("will throw an error if used without daysOfWeek()", function() {
         var recurrence, caught = { message: false };
         try {

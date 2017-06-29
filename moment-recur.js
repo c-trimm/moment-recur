@@ -717,7 +717,7 @@
     // Plugin for removing all time information from a given date
     moment.fn.dateOnly = function() {
         if (this.tz && typeof(moment.tz) == 'function') {
-            return moment.tz(this.format('YYYY-MM-DDT00:00:00.000Z'), 'UTC');
+            return moment.tz(this.format('YYYY-MM-DD[T]00:00:00.000Z'), 'UTC');
         } else {
             return this.hours(0).minutes(0).seconds(0).milliseconds(0).add(this.utcOffset(), "minute").utcOffset(0);
         }

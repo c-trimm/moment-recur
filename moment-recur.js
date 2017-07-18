@@ -1,6 +1,16 @@
 (function (root, factory) {
     if (typeof exports === 'object') {
-        module.exports = factory(require('moment'));
+        var moment;
+        try {
+            moment = require('moment');
+        } catch(err) {
+        }
+        try {
+            moment = require('moment-timezone');
+        } catch (err) {
+
+        }
+        module.exports = factory(moment);
     } else if (typeof define === 'function' && define.amd) {
         define('moment-recur', ['moment'], factory);
     } else {

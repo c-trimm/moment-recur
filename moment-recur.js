@@ -316,7 +316,7 @@
                     date = format ? currentDate.format(format) : currentDate.clone();
                     dates.push(date);
                 }
-                if(type === "all" && currentDate >= this.end) {
+                if(currentDate >= this.end) {
                     break;
                 }
             }

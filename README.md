@@ -1,5 +1,7 @@
 moment-recur
 =====
+[![CDNJS version](https://img.shields.io/cdnjs/v/moment-recur.svg)](https://cdnjs.com/libraries/moment-recur)
+
 moment-recur is a recurring date plugin for [momentjs](http://momentjs.com/). This plugin handles dates only; time information is discarded.
 
 The rule matching concept is borrowed from the excellent [node-date-recur](https://github.com/appsattic/node-date-recur) library created by Andrew Chilton.

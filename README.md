@@ -103,7 +103,7 @@ moment-recur uses rules to define when a date should recur. You can then generat
 
 
 ### The every() Function
-The `every()` function allows you to set the units and, optionally, the measurment type of the recurring date. It returns the recur object to allow chaining.
+The `every()` function allows you to set the units and, optionally, the measurement type of the recurring date. It returns the recur object to allow chaining.
 
 ```js
 var myDate, recurrence;

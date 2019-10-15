@@ -309,6 +309,8 @@ allDates = recurrence.all("L");
 
 **Important Note:** These functions may be very inefficient/slow. They work by attempting to match every date from the start of a range until the desired number of dates have been generated. So if you attempt to get 10 dates for a rule that matches once a year, it will run the match function for ~3650 days.
 
+**Important Note:** the `next` method will return a moment object in utc mode, so if your code is in local mode, you must convert it manually.
+
 
 Options and Other Methods
 -------------------------

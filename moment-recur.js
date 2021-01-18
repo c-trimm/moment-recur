@@ -37,14 +37,12 @@
             // Get the difference between the start date and the provided date,
             // using the required measure based on the type of rule'
             var diff = null;
+            var diffType =
+              type == "days" ? "dayOfYear" : type == "weeks" ? "isoWeeks" : type;
             if (date.isBefore(start)) {
-                diff = start.diff(date, type, true);
+              diff = start[diffType]() - date[diffType]();
             } else {
-                diff = date.diff(start, type, true);
-            }
-            if (type == 'days') {
-                // if we are dealing with days, we deal with whole days only.
-                diff = parseInt(diff);
+              diff = start[diffType]() - date[diffType]();
             }
 
             // Check to see if any of the units provided match the date
